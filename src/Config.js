@@ -1,9 +1,13 @@
+var Config = function(repo) {
+  this.repo = repo;
+};
+
 /**
  * Gets the gitflow related config values for the repository
  * @param {Repository}  repo  The nodegit repository to get the config values from
  * @async
  */
-function getConfig(repo) {
+Config.getConfig = function(repo) {
   if (!repo) {
     return Promise.reject(new Error('A repository is required'));
   }
@@ -34,8 +38,14 @@ function getConfig(repo) {
 
       return result;
     });
-}
-
-module.exports = {
-  getConfig: getConfig
 };
+
+/**
+ * Gets the gitflow related config values for the repository
+ * @async
+ */
+Config.prototype.getConfig = function() {
+  return Config.getConfig(this.repo);
+};
+
+module.exports = Config;

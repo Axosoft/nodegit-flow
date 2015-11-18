@@ -1,8 +1,9 @@
 var assign = require('./utils/assign');
+var Config = require('./Config');
 var Feature = require('./Feature');
 var Hotfix = require('./Hotfix');
 var Release = require('./Release');
-var GitFlowClasses = [Feature, Hotfix, Release];
+var GitFlowClasses = [Config, Feature, Hotfix, Release];
 
 var defaultConfig = {
   'gitflow.branch.master': 'master',
