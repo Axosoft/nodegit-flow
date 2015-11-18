@@ -7,7 +7,7 @@ var nodegit = require('nodegit');
  */
 function getConfig(repo) {
   if (!repo) {
-    return Promise.reject('A repository is required.');
+    return Promise.reject(new Error('A repository is required'));
   }
 
   var configKeys = [

@@ -14,7 +14,7 @@ Flow.init = function init(options) {
   var flow = {};
   var repo = options.repository;
   if (!repo) {
-    throw new Error('A repository is required');
+    return Promise.reject(new Error('A repository is required'));
   }
 
   // Magic to keep individual object context when using init methods
@@ -39,7 +39,7 @@ Flow.init = function init(options) {
  */
 Flow.isInitialized = function isInitialized(repo) {
   if (!repo) {
-    return Promise.reject('A repository is required.');;
+    return Promise.reject(new Error('A repository is required'));
   }
 
   return repo.config()
