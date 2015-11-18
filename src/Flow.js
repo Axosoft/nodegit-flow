@@ -3,7 +3,9 @@ var Feature = require('./Feature');
 var Hotfix = require('./Hotfix');
 var Release = require('./Release');
 
-function init(options) {
+var Flow = function() {}
+
+Flow.init = function init(options) {
   var flow = {};
   var repo = options.repository;
   if (!repo) {
@@ -21,7 +23,7 @@ function init(options) {
   return flow;
 }
 
-function isInitialized(repository) {
+Flow.isInitialized = function isInitialized(repository) {
   if (!repository) {
     throw new Error('A repository is required.');
   }
@@ -41,7 +43,4 @@ function isInitialized(repository) {
     });
 }
 
-module.exports = {
-  init: init,
-  isInitialized: isInitialized
-};
+module.exports = Flow;
