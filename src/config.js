@@ -36,4 +36,6 @@ function getConfig(repo) {
     });
 }
 
-module.exports = getConfig;
+module.exports = {
+  getConfig: getConfig
+};
