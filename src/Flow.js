@@ -1,4 +1,4 @@
-var assign = require('./utils/assign');
+var utils = require('./utils');
 var Config = require('./Config');
 var Feature = require('./Feature');
 var Hotfix = require('./Hotfix');
@@ -19,7 +19,7 @@ var defaultConfig = {
 var Flow = function() {};
 
 GitFlowClasses.forEach(function(GitFlowClass) {
-  assign(Flow, GitFlowClass);
+  utils.Assign(Flow, GitFlowClass);
 });
 
 /**
