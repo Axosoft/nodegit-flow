@@ -23,12 +23,17 @@ Flow.init = function init(options) {
   return flow;
 }
 
-Flow.isInitialized = function isInitialized(repository) {
-  if (!repository) {
-    throw new Error('A repository is required.');
+/**
+ * Check if the repo is using gitflow
+ * @param {Repository}  repo  The nodegit repository instance to check
+ * @async
+ */
+Flow.isInitialized = function isInitialized(repo) {
+  if (!repo) {
+    return Promise.reject('A repository is required.');;
   }
 
-  return repository.config()
+  return repo.config()
     .then(function(config) {
       return Promise.all([
         config.getString('gitflow.branch.master'),

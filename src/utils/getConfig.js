@@ -1,7 +1,12 @@
 var nodegit = require('nodegit');
 
-function getConfig(repository) {
-  if (!repository) {
+/**
+ * Gets the gitflow related config values for the repository
+ * @param {Repository}  repo  The nodegit repository to get the config values from
+ * @async
+ */
+function getConfig(repo) {
+  if (!repo) {
     return Promise.reject('A repository is required.');
   }
 
@@ -15,7 +20,7 @@ function getConfig(repository) {
     'gitflow.prefix.versiontag'
   ];
 
-  return repository.config()
+  return repo.config()
     .then(function(config) {
       var promises = configKeys.map(function(key) {
         return config.getString(key);
