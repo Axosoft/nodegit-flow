@@ -43,7 +43,6 @@ Flow.init = function init(repo, gitflowConfig) {
     })
     .then(function() {
       var flow = {};
-      flow.config = configToUse;
 
       // Magic to keep individual object context when using init methods
       GitFlowClasses.forEach(function(GitFlowClass) {
