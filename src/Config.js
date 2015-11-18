@@ -6,6 +6,21 @@ var _getConfigKeys = function() {
   return Object.keys(Config.getConfigDefault());
 };
 
+var _getConfigValue = function(repo, configKey) {
+  if (!repo) {
+    return Promise.reject(new Error('A repository is required'));
+  }
+
+  if (_getConfigKeys().indexOf(configKey) === -1) {
+    return Promise.reject(new Error('Invalid gitflow config key.'));
+  }
+
+  return repo.config()
+    .then(function(config) {
+      return config.getString(key);
+    });
+};
+
 Config.getConfigDefault = function() {
   return {
     'gitflow.branch.master': 'master',
@@ -55,6 +70,62 @@ Config.getConfig = function(repo) {
  */
 Config.prototype.getConfig = function() {
   return Config.getConfig(this.repo);
+};
+
+Config.getMasterBranch = function(repo) {
+  return _getConfigValue(repo, 'gitflow.branch.master');
+};
+
+Config.prototype.getMasterBranch = function() {
+  return Config.getMasterBranch(this.repo);
+};
+
+Config.getDevelopBranch = function(repo) {
+  return _getConfigValue(repo, 'gitflow.branch.develop');
+};
+
+Config.prototype.getDevelopBranch = function() {
+  return Config.getDevelopBranch(this.repo);
+};
+
+Config.getFeaturePrefix = function(repo) {
+  return _getConfigValue(repo, 'gitflow.prefix.feature');
+};
+
+Config.prototype.getFeaturePrefix = function() {
+  return Config.getFeaturePrefix(this.repo);
+};
+
+Config.getReleasePrefix = function(repo) {
+  return _getConfigValue(repo, 'gitflow.prefix.release');
+};
+
+Config.prototype.getReleasePrefix = function() {
+  return Config.getReleasePrefix(this.repo);
+};
+
+Config.getHotfixPrefix = function(repo) {
+  return _getConfigValue(repo, 'gitflow.prefix.hotfix');
+};
+
+Config.prototype.getHotfixPrefix = function() {
+  return Config.getHotfixPrefix(this.repo);
+};
+
+Config.getSupportPrefix = function(repo) {
+  return _getConfigValue(repo, 'gitflow.prefix.support');
+};
+
+Config.prototype.getSupportPrefix = function() {
+  return Config.getSupportPrefix(this.repo);
+};
+
+Config.getVersionTagPrefix = function(repo) {
+  return _getConfigValue(repo, 'gitflow.prefix.versiontag');
+};
+
+Config.prototype.getVersionTagPrefix = function() {
+  return Config.getVersionTagPrefix(this.repo);
 };
 
 module.exports = Config;
