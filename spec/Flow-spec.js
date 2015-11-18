@@ -12,7 +12,13 @@ describe('Flow', function() {
 
   describe('Init', function() {
     it('should throw error if no repository is passed', function() {
-      expect(Flow.init).toThrow();
+      Flow.init()
+        .then(function() {
+          fail();
+        })
+        .catch(function(reason) {
+          expect(reason).toEqual(jasmine.any(Error));
+        });
     });
 
     it('should return new flow object if repository is passed', function() {
