@@ -1,5 +1,3 @@
-var nodegit = require('nodegit');
-
 /**
  * Gets the gitflow related config values for the repository
  * @param {Repository}  repo  The nodegit repository to get the config values from
