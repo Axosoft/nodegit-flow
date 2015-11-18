@@ -2,8 +2,13 @@ var assign = require('./utils/assign');
 var Feature = require('./Feature');
 var Hotfix = require('./Hotfix');
 var Release = require('./Release');
+var GitFlowClasses = [Feature, Hotfix, Release];
 
-var Flow = function() {}
+var Flow = function() {};
+
+GitFlowClasses.forEach(function(GitFlowClass) {
+  assign(Flow, GitFlowClass);
+});
 
 Flow.init = function init(options) {
   var flow = {};
@@ -12,16 +17,20 @@ Flow.init = function init(options) {
     throw new Error('A repository is required');
   }
 
-  var feature = new Feature(repo);
-  var hotfix = new hotfix(repo);
-  var release = new Release(repo);
-
-  assign(flow, feature);
-  assign(flow, hotfix);
-  assign(flow, release);
+  // Magic to keep individual object context when using init methods
+  GitFlowClasses.forEach(function(GitFlowClass) {
+    var gitflowObject = new GitFlowClass(repo);
+    Object.getOwnPropertyNames(GitFlowClass.prototype).forEach(function(propName) {
+      if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
+        flow[propName] = function() {
+          gitflowObject[propName].apply(gitflowObject, arguments);
+        }
+      }
+    });
+  });
 
   return flow;
-}
+};
 
 /**
  * Check if the repo is using gitflow
@@ -46,6 +55,6 @@ Flow.isInitialized = function isInitialized(repo) {
           return false;
         });
     });
-}
+};
 
 module.exports = Flow;
