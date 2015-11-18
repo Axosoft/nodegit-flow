@@ -2,6 +2,23 @@ var Config = function(repo) {
   this.repo = repo;
 };
 
+var _getConfigKeys = function() {
+  return Object.keys(Config.getConfigDefault());
+};
+
+Config.getConfigDefault = function() {
+  return {
+    'gitflow.branch.master': 'master',
+    'gitflow.branch.develop': 'develop',
+
+    'gitflow.prefix.feature': 'feature/',
+    'gitflow.prefix.release': 'release/',
+    'gitflow.prefix.hotfix': 'hotfix/',
+    'gitflow.prefix.support': 'support/',
+    'gitflow.prefix.versiontag': ''
+  };
+}
+
 /**
  * Gets the gitflow related config values for the repository
  * @param {Repository}  repo  The nodegit repository to get the config values from
@@ -12,15 +29,7 @@ Config.getConfig = function(repo) {
     return Promise.reject(new Error('A repository is required'));
   }
 
-  var configKeys = [
-    'gitflow.branch.master',
-    'gitflow.branch.develop',
-    'gitflow.prefix.feature',
-    'gitflow.prefix.release',
-    'gitflow.prefix.hotfix',
-    'gitflow.prefix.support',
-    'gitflow.prefix.versiontag'
-  ];
+  var configKeys = _getConfigKeys();
 
   return repo.config()
     .then(function(config) {

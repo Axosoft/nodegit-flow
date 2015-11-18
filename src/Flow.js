@@ -5,17 +5,6 @@ var Hotfix = require('./Hotfix');
 var Release = require('./Release');
 var GitFlowClasses = [Config, Feature, Hotfix, Release];
 
-var defaultConfig = {
-  'gitflow.branch.master': 'master',
-  'gitflow.branch.develop': 'develop',
-
-  'gitflow.prefix.feature': 'feature/',
-  'gitflow.prefix.release': 'release/',
-  'gitflow.prefix.hotfix': 'hotfix/',
-  'gitflow.prefix.support': 'support/',
-  'gitflow.prefix.versiontag': ''
-};
-
 var Flow = function() {};
 
 GitFlowClasses.forEach(function(GitFlowClass) {
@@ -35,6 +24,7 @@ Flow.init = function init(repo, gitflowConfig) {
 
   gitflowConfig = gitflowConfig || {};
 
+  var defaultConfig = Config.getConfigDefault();
   var configKeys = Object.keys(defaultConfig);
   var configToUse = {};
   configKeys.forEach(function(key) {
