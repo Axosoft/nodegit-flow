@@ -1,12 +1,7 @@
 var nodegit = require('nodegit');
+var assign = require('./utils/assign');
 
 var flow = nodegit.Flow = {};
-
-function assign(to, from) {
-  Object.keys(from).forEach(function(key) {
-    to[key] = from[key];
-  });
-}
 
 assign(flow, require('./init'));
 
