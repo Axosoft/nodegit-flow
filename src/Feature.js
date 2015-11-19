@@ -1,4 +1,3 @@
-var NodeGit = require('nodegit');
 var Config = require('./Config');
 
 var Feature = function(repo, config) {
@@ -21,17 +20,15 @@ Feature.startFeature = function startFeature(repo, featureName) {
   }
 
   var featurePrefix;
-  var developBranch;
   return Config.getConfig(repo)
     .then(function(config) {
       featurePrefix = config.featurePrefix;
-      developBranch = config.developBranch;
       var branchName = featurePrefix + featureName;
-      return repo.createBranch(branchName, commit)
+      return repo.createBranch(branchName)
     });
 };
 
-Feature.startFeatureOnCommit = function startFeatureOnCommit(repo, featureName, sha) {
+Feature.startFeatureOnCommit = function startFeatureOnCommit() {
   // TODO
 };
 
@@ -40,7 +37,7 @@ Feature.startFeatureOnCommit = function startFeatureOnCommit(repo, featureName, 
  * @param {Object} the repo to start a feature in
  * @param {String} branch name to finish feature with
  */
-Feature.finishFeature = function finishFeature(repo, featureName) {
+Feature.finishFeature = function finishFeature() {
   // TODO
 };
 
@@ -48,7 +45,7 @@ Feature.finishFeature = function finishFeature(repo, featureName) {
  * Instance method to start a feature
  * @param {String} branch name to finish feature with
  */
-Feature.prototype.startFeature = function startFeature(branchName) {
+Feature.prototype.startFeature = function startFeature() {
   // TODO
 };
 
@@ -56,7 +53,7 @@ Feature.prototype.startFeature = function startFeature(branchName) {
  * Instance method to finish a feature
  * @param {String} branch name to finish feature with
  */
-Feature.prototype.finishFeature = function finishFeature(branchName) {
+Feature.prototype.finishFeature = function finishFeature() {
   // TODO
 };
 

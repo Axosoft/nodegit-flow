@@ -7,7 +7,7 @@ var Release = function(repo) {
  * @param {Object} the repo to start a release in
  * @param {String} new branch name to start release with
  */
-Release.startRelease = function startRelease(repo, branchName) {
+Release.startRelease = function startRelease() {
   // TODO
 }
 
@@ -16,7 +16,7 @@ Release.startRelease = function startRelease(repo, branchName) {
  * @param {Object} the repo to start a release in
  * @param {String} branch name to finish release with
  */
-Release.finishRelease = function finishRelease(repo, branchName) {
+Release.finishRelease = function finishRelease() {
   // TODO
 }
 
@@ -24,7 +24,7 @@ Release.finishRelease = function finishRelease(repo, branchName) {
  * Instance method to start a release
  * @param {String} branch name to finish release with
  */
-Release.prototype.startRelease = function startRelease(branchName) {
+Release.prototype.startRelease = function startRelease() {
   // TODO
 }
 
@@ -32,7 +32,7 @@ Release.prototype.startRelease = function startRelease(branchName) {
  * Instance method to finish a release
  * @param {String} branch name to finish release with
  */
-Release.prototype.finishRelease = function finishRelease(branchName) {
+Release.prototype.finishRelease = function finishRelease() {
   // TODO
 }
 

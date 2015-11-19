@@ -17,7 +17,7 @@ var _getConfigValue = function(repo, configKey) {
 
   return repo.config()
     .then(function(config) {
-      return config.getString(key);
+      return config.getString(configKey);
     });
 };
 
