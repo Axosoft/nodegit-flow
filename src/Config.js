@@ -17,7 +17,7 @@ var _getConfigValue = function(repo, configKey) {
 
   return repo.config()
     .then(function(config) {
-      return config.getString(key);
+      return config.getString(configKey);
     });
 };
 
@@ -32,7 +32,7 @@ Config.getConfigDefault = function() {
     'gitflow.prefix.support': 'support/',
     'gitflow.prefix.versiontag': ''
   };
-}
+};
 
 /**
  * Gets the gitflow related config values for the repository

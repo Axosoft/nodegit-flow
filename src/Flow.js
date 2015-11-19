@@ -51,7 +51,7 @@ Flow.init = function init(repo, gitflowConfig) {
           if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
             flow[propName] = function() {
               gitflowObject[propName].apply(gitflowObject, arguments);
-            }
+            };
           }
         });
       });
