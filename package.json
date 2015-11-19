@@ -4,6 +4,7 @@
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
   "main": "src/index.js",
   "scripts": {
+    "eslint": "./node_modules/.bin/eslint src",
     "test": "./node_modules/.bin/jasmine-node spec"
   },
   "repository": {
@@ -25,5 +26,8 @@
   "dependencies": {
     "jasmine-node": "^1.14.5",
     "nodegit": "^0.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^1.9.0"
   }
 }
