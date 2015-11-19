@@ -1,2 +1,2 @@
-const FolderLoader = require('../utils/FolderLoader');
+var FolderLoader = require('../utils/FolderLoader');
 FolderLoader(__dirname, module.exports, 'Constants.js');
