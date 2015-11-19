@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/smith-kyle/nodegit-flow#readme",
   "dependencies": {
-    "jasmine-node": "^1.14.5",
     "nodegit": "^0.5.0"
   },
   "devDependencies": {
-    "eslint": "^1.9.0"
+    "eslint": "^1.9.0",
+    "jasmine-node": "^1.14.5"
   }
 }
