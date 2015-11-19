@@ -3,7 +3,7 @@ var Config = require('./Config');
 var Feature = function(repo, config) {
   this.repo = repo;
   this.config = config;
-}
+};
 
 /**
  * Static method to start a feature
@@ -24,7 +24,7 @@ Feature.startFeature = function startFeature(repo, featureName) {
     .then(function(config) {
       featurePrefix = config.featurePrefix;
       var branchName = featurePrefix + featureName;
-      return repo.createBranch(branchName)
+      return repo.createBranch(branchName);
     });
 };
 

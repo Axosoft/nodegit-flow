@@ -1,6 +1,6 @@
 var Release = function(repo) {
   this.repo = repo;
-}
+};
 
 /**
  * Static method to start a release
@@ -9,7 +9,7 @@ var Release = function(repo) {
  */
 Release.startRelease = function startRelease() {
   // TODO
-}
+};
 
 /**
  * Static method to finish a release
@@ -18,7 +18,7 @@ Release.startRelease = function startRelease() {
  */
 Release.finishRelease = function finishRelease() {
   // TODO
-}
+};
 
 /**
  * Instance method to start a release
@@ -26,7 +26,7 @@ Release.finishRelease = function finishRelease() {
  */
 Release.prototype.startRelease = function startRelease() {
   // TODO
-}
+};
 
 /**
  * Instance method to finish a release
@@ -34,6 +34,6 @@ Release.prototype.startRelease = function startRelease() {
  */
 Release.prototype.finishRelease = function finishRelease() {
   // TODO
-}
+};
 
 module.exports = Release;

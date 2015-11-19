@@ -1,6 +1,6 @@
 var Hotfix = function(repo) {
   this.repo = repo;
-}
+};
 
 /**
  * Static method to start a hotfix
@@ -9,7 +9,7 @@ var Hotfix = function(repo) {
  */
 Hotfix.startHotfix = function startHotfix() {
   // TODO
-}
+};
 
 /**
  * Static method to finish a hotfix
@@ -18,7 +18,7 @@ Hotfix.startHotfix = function startHotfix() {
  */
 Hotfix.finishHotfix = function finishHotfix() {
   // TODO
-}
+};
 
 /**
  * Instance method to start a hotfix
@@ -26,7 +26,7 @@ Hotfix.finishHotfix = function finishHotfix() {
  */
 Hotfix.prototype.startHotfix = function startHotfix() {
   // TODO
-}
+};
 
 /**
  * Instance method to finish a hotfix
@@ -34,6 +34,6 @@ Hotfix.prototype.startHotfix = function startHotfix() {
  */
 Hotfix.prototype.finishHotfix = function finishHotfix() {
   // TODO
-}
+};
 
 module.exports = Hotfix;

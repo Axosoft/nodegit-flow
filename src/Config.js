@@ -32,7 +32,7 @@ Config.getConfigDefault = function() {
     'gitflow.prefix.support': 'support/',
     'gitflow.prefix.versiontag': ''
   };
-}
+};
 
 /**
  * Gets the gitflow related config values for the repository
