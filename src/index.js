@@ -1,9 +1,10 @@
 var nodegit = require('nodegit');
 var utils = require('./utils');
+var models = require('./models');
 
 var flow = nodegit.Flow = {};
 
-utils.Assign(flow, require('./Config'));
-utils.Assign(flow, require('./Flow'));
+utils.Assign(flow, models.Config);
+utils.Assign(flow, models.Flow);
 
 module.exports = nodegit;

@@ -1,4 +1,4 @@
-var utils = require('./utils');
+var utils = require('../utils');
 var Config = require('./Config');
 var Feature = require('./Feature');
 var Hotfix = require('./Hotfix');
