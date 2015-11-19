@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/smith-kyle/nodegit-flow#readme",
   "dependencies": {
+    "jasmine-pit": "^2.0.2",
     "nodegit": "^0.5.0"
   },
   "devDependencies": {

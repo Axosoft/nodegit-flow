@@ -1,8 +1,12 @@
 {
     "env": {
-        "node": true
+        "node": true,
+        "jasmine": true
     },
     "extends": "eslint:recommended",
+    "globals": {
+      "pit": true
+    },
     "rules": {
       "indent": [2, 2],
       "no-trailing-spaces": 2,
