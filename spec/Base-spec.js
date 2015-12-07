@@ -1,15 +1,15 @@
 var jasminePit = require('jasmine-pit');
 jasminePit.install(global);
-var models = require('../../src/models');
+var Base = require('../../src/Base');
 
 describe('Flow', function() {
   it('should be able to require Flow', function() {
-    expect(models.Flow).toBeDefined(models.Flow);
+    expect(Base).toBeDefined();
   });
 
   it('should have static method `init` and `isInitialized` on Flow object', function() {
-    expect(models.Flow.init).toEqual(jasmine.any(Function));
-    expect(models.Flow.isInitialized).toEqual(jasmine.any(Function));
+    expect(Base.init).toEqual(jasmine.any(Function));
+    expect(Base.isInitialized).toEqual(jasmine.any(Function));
   });
 
   describe('Init', function() {
@@ -28,7 +28,7 @@ describe('Flow', function() {
 
 
     pit('should throw error if no repository is passed', function() {
-      return models.Flow.init()
+      return Base.init()
         .then(function() {
           fail();
         })
@@ -38,7 +38,7 @@ describe('Flow', function() {
     });
 
     pit('should return new flow object if repository is passed', function() {
-      return models.Flow.init(this.repo)
+      return Base.init(this.repo)
         .then(function(flow) {
           expect(flow.startFeature).toEqual(jasmine.any(Function));
           expect(flow.startFeature).toEqual(jasmine.any(Function));
@@ -52,12 +52,12 @@ describe('Flow', function() {
 
   describe('Static methods', function() {
     it('should contain all of the static methods', function() {
-      expect(models.Flow.startFeature).toEqual(jasmine.any(Function));
-      expect(models.Flow.startFeature).toEqual(jasmine.any(Function));
-      expect(models.Flow.startHotfix).toEqual(jasmine.any(Function));
-      expect(models.Flow.startHotfix).toEqual(jasmine.any(Function));
-      expect(models.Flow.startRelease).toEqual(jasmine.any(Function));
-      expect(models.Flow.startRelease).toEqual(jasmine.any(Function));
+      expect(Base.startFeature).toEqual(jasmine.any(Function));
+      expect(Base.startFeature).toEqual(jasmine.any(Function));
+      expect(Base.startHotfix).toEqual(jasmine.any(Function));
+      expect(Base.startHotfix).toEqual(jasmine.any(Function));
+      expect(Base.startRelease).toEqual(jasmine.any(Function));
+      expect(Base.startRelease).toEqual(jasmine.any(Function));
     });
   });
 });
