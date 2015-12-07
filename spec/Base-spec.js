@@ -1,8 +1,19 @@
-var jasminePit = require('jasmine-pit');
-jasminePit.install(global);
 var Base = require('../../src/Base');
+const pit = function(description, spec) {
+  it(description, (done) => {
+    spec()
+      .then(done)
+      .catch(done)
+  });
+};
 
-describe('Flow', function() {
+describe('Base', function() {
+  let test;
+
+  beforeEach(function() {
+    test = this;
+  });
+
   it('should be able to require Flow', function() {
     expect(Base).toBeDefined();
   });
@@ -38,7 +49,7 @@ describe('Flow', function() {
     });
 
     pit('should return new flow object if repository is passed', function() {
-      return Base.init(this.repo)
+      return Base.init(test.repo)
         .then(function(flow) {
           expect(flow.startFeature).toEqual(jasmine.any(Function));
           expect(flow.startFeature).toEqual(jasmine.any(Function));
@@ -47,17 +58,6 @@ describe('Flow', function() {
           expect(flow.startRelease).toEqual(jasmine.any(Function));
           expect(flow.startRelease).toEqual(jasmine.any(Function));
         });
-    });
-  });
-
-  describe('Static methods', function() {
-    it('should contain all of the static methods', function() {
-      expect(Base.startFeature).toEqual(jasmine.any(Function));
-      expect(Base.startFeature).toEqual(jasmine.any(Function));
-      expect(Base.startHotfix).toEqual(jasmine.any(Function));
-      expect(Base.startHotfix).toEqual(jasmine.any(Function));
-      expect(Base.startRelease).toEqual(jasmine.any(Function));
-      expect(Base.startRelease).toEqual(jasmine.any(Function));
     });
   });
 });
