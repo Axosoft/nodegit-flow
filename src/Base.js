@@ -73,7 +73,11 @@ class Base {
 
     return repo.config()
       .then(function(config) {
-        return Promise.all(Config.getConfigRequiredKeys())
+        var promises = Config.getConfigRequiredKeys().map(function(key) {
+          return config.getString(key);
+        });
+
+        return Promise.all(promises)
           .then(function() {
             return true;
           })
