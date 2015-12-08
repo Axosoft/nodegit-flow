@@ -12,9 +12,8 @@ var _getConfigValue = function(repo, configKey) {
   }
 
   return repo.config()
-    .then(function(config) {
-      return config.getString(configKey);
-    });
+    .then((config) => config.getString(configKey))
+    .catch(() => Promise.reject(new Error(`Failed to read config value ${configKey}`)));
 };
 
 class Config {
