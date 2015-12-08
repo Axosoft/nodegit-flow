@@ -4,10 +4,11 @@
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
   "main": "build/src/index.js",
   "scripts": {
-    "compile": "babel --presets es2015 -d ./build/spec ./spec && babel --presets es2015 -d ./build/src ./src",
+    "compile": "babel --sourceMaps --presets es2015 -d ./build/spec ./spec && babel --sourceMaps --presets es2015 -d ./build/src ./src",
     "eslint": "./node_modules/.bin/eslint src",
     "prepublish": "babel --presets es2015 -d ./build/src ./src",
-    "test": "npm run eslint && npm run compile && ./node_modules/.bin/jasmine-node build/spec"
+    "debug-test": "npm run eslint && npm run compile && node-debug --debug-brk node_modules/.bin/jasmine-node build/spec/tests",
+    "test": "npm run eslint && npm run compile && node_modules/.bin/jasmine-node build/spec/tests"
   },
   "repository": {
     "type": "git",
