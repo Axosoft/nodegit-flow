@@ -2,7 +2,7 @@ const Config = require('./Config');
 const Feature = require('./Feature');
 const Hotfix = require('./Hotfix');
 const Release = require('./Release');
-const GitFlowClasses = [Base, Config, Feature, Hotfix, Release];
+const GitFlowClasses = [Config, Feature, Hotfix, Release];
 
 class Base {
   /**
