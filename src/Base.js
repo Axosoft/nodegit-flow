@@ -21,9 +21,16 @@ class Base {
     var defaultConfig = Config.getConfigDefault();
     var configKeys = Object.keys(defaultConfig);
     var configToUse = {};
+
+    // filter out non-gitflow keys
     configKeys.forEach(function(key) {
-      configToUse[key] = gitflowConfig[key] || defaultConfig[key];
+      configToUse[key] = gitflowConfig[key];
     });
+
+    var configError = Config.validateConfig(configToUse);
+    if (configError) {
+      return Promise.reject(new Error(configError));
+    }
 
     return repo.config()
       .then(function(config) {
@@ -66,10 +73,7 @@ class Base {
 
     return repo.config()
       .then(function(config) {
-        return Promise.all([
-          config.getString('gitflow.branch.master'),
-          config.getString('gitflow.branch.develop')
-        ])
+        return Promise.all(Config.getConfigRequiredKeys())
           .then(function() {
             return true;
           })

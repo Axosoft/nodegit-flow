@@ -29,9 +29,35 @@ class Config {
       'gitflow.prefix.feature': 'feature/',
       'gitflow.prefix.release': 'release/',
       'gitflow.prefix.hotfix': 'hotfix/',
-      'gitflow.prefix.support': 'support/',
+
       'gitflow.prefix.versiontag': ''
     };
+  }
+
+  static getConfigRequiredKeys() {
+    return [
+      'gitflow.branch.master',
+      'gitflow.branch.develop',
+      'gitflow.prefix.feature',
+      'gitflow.prefix.release',
+      'gitflow.prefix.hotfix'
+    ];
+  }
+
+  /**
+   * Checks a config object for all required gitflow config keys.
+   * @return An error message, or 0 if all required keys are present.
+   */
+  static validateConfig(config) {
+    var missingKeys = Config.getConfigRequiredKeys().filter(function(key) {
+      return !config[key] || typeof config[key] !== 'string';
+    });
+
+    if (missingKeys.length) {
+      return 'gitflow config missing key(s): ' + missingKeys.join(', ');
+    }
+
+    return 0;
   }
 
   /**
