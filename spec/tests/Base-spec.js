@@ -1,11 +1,5 @@
-var Base = require('../src/Base');
-const pit = function(description, spec) {
-  it(description, (done) => {
-    spec()
-      .then(done)
-      .catch(done)
-  });
-};
+var Base = require('../../src/Base');
+var Config = require('../../src/Config');
 
 describe('Base', function() {
   let test;
@@ -26,37 +20,44 @@ describe('Base', function() {
   describe('Init', function() {
     beforeEach(function() {
       var repoConfig = {
-        setString: function() {
+        setString() {
           return Promise.resolve();
         }
       };
-      this.repo = {
-        config: function() {
+      test.repo = {
+        config() {
           return Promise.resolve(repoConfig);
+        },
+        getBranch() {
+          return Promise.resolve();
         }
       };
     });
 
 
-    pit('should throw error if no repository is passed', function() {
+    it('should throw error if no repository is passed', function(done) {
       return Base.init()
-        .then(function() {
-          fail();
-        })
-        .catch(function(reason) {
+        .then(jasmine.fail)
+        .catch((reason) => {
           expect(reason).toEqual(jasmine.any(Error));
+          done();
         });
     });
 
-    pit('should return new flow object if repository is passed', function() {
-      return Base.init(test.repo)
-        .then(function(flow) {
+    it('should return new flow object if repository is passed', function(done) {
+      const defaultConfig = Config.getConfigDefault();
+      return Base.init(test.repo, defaultConfig)
+        .then((flow) => {
           expect(flow.startFeature).toEqual(jasmine.any(Function));
           expect(flow.startFeature).toEqual(jasmine.any(Function));
           expect(flow.startHotfix).toEqual(jasmine.any(Function));
           expect(flow.startHotfix).toEqual(jasmine.any(Function));
           expect(flow.startRelease).toEqual(jasmine.any(Function));
           expect(flow.startRelease).toEqual(jasmine.any(Function));
+          done();
+        })
+        .catch((reason) => {
+          console.log(reason);
         });
     });
   });

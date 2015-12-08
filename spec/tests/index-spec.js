@@ -1,4 +1,4 @@
-const {Flow} = require('../src');
+const {Flow} = require('../../src');
 
 describe('Flow', function() {
   it('should contain all of the static methods', function() {
