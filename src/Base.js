@@ -23,7 +23,7 @@ class Base {
     var configToUse = {};
 
     // filter out non-gitflow keys
-    configKeys.forEach(function(key) {
+    configKeys.forEach((key) => {
       configToUse[key] = gitflowConfig[key];
     });
 
@@ -36,38 +36,32 @@ class Base {
     var developBranchName = configToUse['gitflow.branch.develop'];
 
     return repo.getBranch(masterBranchName)
-      .catch(function() {
+      .catch(() => {
         return Promise.reject(new Error('The branch set as the master branch must already exist'));
       })
-      .then(function() {
+      .then(() => {
         // Create the `develop` branch if it does not already exist
         return repo.getBranch(developBranchName)
-          .catch(function() {
-            return repo.getBranchCommit(masterBranchName)
-              .then(function(commit) {
-                return repo.createBranch(developBranchName, commit.id());
-              });
-          });
+          .catch(() => repo.getBranchCommit(masterBranchName)
+              .then((commit) => repo.createBranch(developBranchName, commit.id())));
       })
-      .then(function() {
-        return repo.config();
-      })
-      .then(function(config) {
+      .then(() => repo.config())
+      .then((config) => {
         // Set the config values. We chain them so we don't have concurrent setString calls to the same config file
-        return configKeys.reduce(function(last, next) {
+        return configKeys.reduce((last, next) => {
           return last
-            .then(function() {
+            .then(() => {
               return config.setString(next, configToUse[next]);
             });
         }, Promise.resolve());
       })
-      .then(function() {
+      .then(() => {
         var flow = {};
 
         // Magic to keep individual object context when using init methods
-        GitFlowClasses.forEach(function(GitFlowClass) {
+        GitFlowClasses.forEach((GitFlowClass) => {
           var gitflowObject = new GitFlowClass(repo);
-          Object.getOwnPropertyNames(GitFlowClass.prototype).forEach(function(propName) {
+          Object.getOwnPropertyNames(GitFlowClass.prototype).forEach((propName) => {
             if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
               flow[propName] = function() {
                 gitflowObject[propName].apply(gitflowObject, arguments);
@@ -91,18 +85,14 @@ class Base {
     }
 
     return repo.config()
-      .then(function(config) {
-        var promises = Config.getConfigRequiredKeys().map(function(key) {
+      .then((config) => {
+        var promises = Config.getConfigRequiredKeys().map((key) => {
           return config.getString(key);
         });
 
         return Promise.all(promises)
-          .then(function() {
-            return true;
-          })
-          .catch(function() {
-            return false;
-          });
+          .then(() => true)
+          .catch(() => false);
       });
   }
 }
