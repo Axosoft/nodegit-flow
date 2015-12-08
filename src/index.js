@@ -7,7 +7,7 @@ const Hotfix = require('./Hotfix');
 const Release = require('./Release');
 const GitFlowClasses = [Base, Config, Feature, Hotfix, Release];
 
-// Add Flow methods to vanilla nodegit instance
+// Add static Flow methods to vanilla nodegit instance
 nodegit.Flow = {};
 GitFlowClasses.forEach((GitFlowClass) => {
   utils.Assign(nodegit.Flow, GitFlowClass);

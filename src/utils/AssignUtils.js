@@ -1,5 +1,13 @@
+const noOpProperties = [
+  'arguments',
+  'caller',
+  'callee'
+];
+
 module.exports = function(to, from) {
-  Object.keys(from).forEach(function(key) {
-    to[key] = from[key];
+  Object.getOwnPropertyNames(from).forEach((key) => {
+    if (!~noOpProperties.indexOf(key) && typeof from[key] === 'function') {
+      to[key] = from[key];
+    }
   });
 };

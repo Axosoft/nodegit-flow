@@ -1,4 +1,4 @@
-var Base = require('../../src/Base');
+var Base = require('../src/Base');
 const pit = function(description, spec) {
   it(description, (done) => {
     spec()
