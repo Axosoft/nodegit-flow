@@ -32,9 +32,28 @@ class Base {
       return Promise.reject(new Error(configError));
     }
 
-    return repo.config()
+    var masterBranchName = configToUse['gitflow.branch.master'];
+    var developBranchName = configToUse['gitflow.branch.develop'];
+
+    return repo.getBranch(masterBranchName)
+      .catch(function() {
+        return Promise.reject(new Error('The branch set as the master branch must already exist'));
+      })
+      .then(function() {
+        // Create the `develop` branch if it does not already exist
+        return repo.getBranch(developBranchName)
+          .catch(function() {
+            return repo.getBranchCommit(masterBranchName)
+              .then(function(commit) {
+                return repo.createBranch(developBranchName, commit.id());
+              });
+          });
+      })
+      .then(function() {
+        return repo.config();
+      })
       .then(function(config) {
-        // Chain them so we don't have concurrent setString calls to the same config file
+        // Set the config values. We chain them so we don't have concurrent setString calls to the same config file
         return configKeys.reduce(function(last, next) {
           return last
             .then(function() {
