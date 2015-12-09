@@ -1,5 +1,7 @@
-var Base = require('../../src/Base');
-var Config = require('../../src/Config');
+/* eslint prefer-arrow-callback: 0 */
+
+const Base = require('../../src/Base');
+const Config = require('../../src/Config');
 
 describe('Base', function() {
   let test;
@@ -19,7 +21,7 @@ describe('Base', function() {
 
   describe('Init', function() {
     beforeEach(function() {
-      var repoConfig = {
+      const repoConfig = {
         setString() {
           return Promise.resolve();
         }
@@ -55,9 +57,6 @@ describe('Base', function() {
           expect(flow.startRelease).toEqual(jasmine.any(Function));
           expect(flow.startRelease).toEqual(jasmine.any(Function));
           done();
-        })
-        .catch((reason) => {
-          console.log(reason);
         });
     });
   });

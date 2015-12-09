@@ -1,3 +1,5 @@
+/* eslint prefer-arrow-callback: 0 */
+
 const promisify = require('../../../src/utils/Promisify');
 
 describe('Promisify', function() {
@@ -6,7 +8,7 @@ describe('Promisify', function() {
     test.successMessage = 'Successfully called this function';
     test.errorMessage = 'This is an error';
 
-    this.standardFunction = function(arg, cb) {
+    this.standardFunction = (arg, cb) => {
       if (arg) {
         cb(null, test.successMessage);
       }

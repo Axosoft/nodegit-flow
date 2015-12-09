@@ -1,3 +1,5 @@
+/* eslint prefer-arrow-callback: 0 */
+
 const {Flow} = require('../../src');
 
 describe('Flow', function() {

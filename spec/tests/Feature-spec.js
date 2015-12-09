@@ -1,6 +1,7 @@
+/* eslint prefer-arrow-callback: 0 */
+
 const Feature = require('../../src/Feature');
 const NodeGit = require('../../src');
-const fse = require('fs-extra');
 const RepoUtils = require('../utils/RepoUtils');
 
 describe('Feature', function() {

@@ -19,7 +19,7 @@ const RepoUtils = {
   createRepo(repoName) {
     const repoPath = path.join(__dirname, this.repoDir, repoName);
     fse.ensureDirSync(repoPath);
-    return NodeGit.Repository.init(repoPath, 0)
+    return NodeGit.Repository.init(repoPath, 0);
   },
 
   commitFileToRepo(repo, fileName, fileContent) {
