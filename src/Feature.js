@@ -23,6 +23,7 @@ class Feature {
     }
 
     let featureBranchName;
+    let featureBranch;
     return Config.getConfig(repo)
       .then((config) => {
         const featurePrefix = config['gitflow.prefix.feature'];
@@ -36,7 +37,12 @@ class Feature {
         );
       })
       .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()))
-      .then((localDevelopCommit) => repo.createBranch(featureBranchName, localDevelopCommit));
+      .then((localDevelopCommit) => repo.createBranch(featureBranchName, localDevelopCommit))
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        return repo.checkoutBranch(featureBranch);
+      })
+      .then(() => featureBranch);
   }
 
   /**
