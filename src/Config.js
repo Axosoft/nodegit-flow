@@ -1,10 +1,12 @@
-const _getConfigKeys = function() {
-  return Object.keys(Config.getConfigDefault());
-};
+const constants = require('./constants');
 
-const _getConfigValue = function(repo, configKey) {
+function _getConfigKeys() {
+  return Object.keys(Config.getConfigDefault());
+}
+
+function _getConfigValue(repo, configKey) {
   if (!repo) {
-    return Promise.reject(new Error('A repository is required'));
+    return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
   }
 
   if (_getConfigKeys().indexOf(configKey) === -1) {
@@ -14,7 +16,7 @@ const _getConfigValue = function(repo, configKey) {
   return repo.config()
     .then((config) => config.getString(configKey))
     .catch(() => Promise.reject(new Error(`Failed to read config value ${configKey}`)));
-};
+}
 
 class Config {
   constructor(repo) {
@@ -67,7 +69,7 @@ class Config {
    */
   static getConfig(repo) {
     if (!repo) {
-      return Promise.reject(new Error('A repository is required'));
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
 
     const configKeys = _getConfigKeys();

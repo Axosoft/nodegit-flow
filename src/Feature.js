@@ -2,6 +2,8 @@ const Promise = require('nodegit-promise');
 const NodeGit = require('nodegit');
 const Config = require('./Config');
 
+const constants = require('./constants');
+
 class Feature {
   constructor(repo, config) {
     this.repo = repo;
@@ -15,7 +17,7 @@ class Feature {
    */
   static startFeature(repo, featureName) {
     if (!repo) {
-      return Promise.reject(new Error('Repo is required'));
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
 
     if (!featureName) {

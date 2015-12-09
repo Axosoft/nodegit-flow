@@ -4,6 +4,8 @@ const Hotfix = require('./Hotfix');
 const Release = require('./Release');
 const GitFlowClasses = [Config, Feature, Hotfix, Release];
 
+const constants = require('./constants');
+
 class Base {
   /**
    * Initializes the repo to use gitflow
@@ -13,7 +15,7 @@ class Base {
    */
   static init(repo, gitflowConfig) {
     if (!repo) {
-      return Promise.reject(new Error('A repository is required'));
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
 
     gitflowConfig = gitflowConfig || {};
@@ -81,7 +83,7 @@ class Base {
    */
   static isInitialized(repo) {
     if (!repo) {
-      return Promise.reject(new Error('A repository is required'));
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
 
     return repo.config()
