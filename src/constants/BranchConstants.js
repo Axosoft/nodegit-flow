@@ -1,4 +1,4 @@
-var BranchConstants = {
+const BranchConstants = {
   mergeState: {
     UP_TO_DATE: 'up_to_date',
     FAST_FORWARD: 'fast_forward',

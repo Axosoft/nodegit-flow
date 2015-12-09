@@ -1,2 +1,1 @@
-var FolderLoader = require('../utils/FolderLoader');
-FolderLoader(__dirname, module.exports, 'Constants.js');
+require('../utils/FolderLoader')(__dirname, module.exports, 'Constants.js');

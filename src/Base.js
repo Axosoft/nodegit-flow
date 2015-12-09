@@ -18,22 +18,22 @@ class Base {
 
     gitflowConfig = gitflowConfig || {};
 
-    var defaultConfig = Config.getConfigDefault();
-    var configKeys = Object.keys(defaultConfig);
-    var configToUse = {};
+    const defaultConfig = Config.getConfigDefault();
+    const configKeys = Object.keys(defaultConfig);
+    const configToUse = {};
 
     // filter out non-gitflow keys
     configKeys.forEach((key) => {
       configToUse[key] = gitflowConfig[key];
     });
 
-    var configError = Config.validateConfig(configToUse);
+    const configError = Config.validateConfig(configToUse);
     if (configError) {
       return Promise.reject(new Error(configError));
     }
 
-    var masterBranchName = configToUse['gitflow.branch.master'];
-    var developBranchName = configToUse['gitflow.branch.develop'];
+    const masterBranchName = configToUse['gitflow.branch.master'];
+    const developBranchName = configToUse['gitflow.branch.develop'];
 
     return repo.getBranch(masterBranchName)
       .catch(() => {
@@ -56,11 +56,11 @@ class Base {
         }, Promise.resolve());
       })
       .then(() => {
-        var flow = {};
+        const flow = {};
 
         // Magic to keep individual object context when using init methods
         GitFlowClasses.forEach((GitFlowClass) => {
-          var gitflowObject = new GitFlowClass(repo);
+          const gitflowObject = new GitFlowClass(repo);
           Object.getOwnPropertyNames(GitFlowClass.prototype).forEach((propName) => {
             if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
               flow[propName] = function() {
@@ -86,7 +86,7 @@ class Base {
 
     return repo.config()
       .then((config) => {
-        var promises = Config.getConfigRequiredKeys().map((key) => {
+        const promises = Config.getConfigRequiredKeys().map((key) => {
           return config.getString(key);
         });
 

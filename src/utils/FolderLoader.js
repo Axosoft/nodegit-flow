@@ -1,13 +1,13 @@
-var path = require('path');
-var fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 
 function FolderLoader(absoluteFolder, onto, replace) {
   if (!replace) {
     replace = '';
   }
-  var relative = path.relative(__dirname, absoluteFolder);
-  fs.readdirSync(absoluteFolder).forEach(function(file) {
-    var fileStats = fs.lstatSync(path.join(absoluteFolder, file));
+  const relative = path.relative(__dirname, absoluteFolder);
+  fs.readdirSync(absoluteFolder).forEach((file) => {
+    const fileStats = fs.lstatSync(path.join(absoluteFolder, file));
 
     // don't recurse down directories
     if (file.indexOf('index.') && ~file.indexOf('.js') && !fileStats.isDirectory()) {

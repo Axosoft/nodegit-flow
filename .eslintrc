@@ -11,7 +11,11 @@
     "rules": {
       "indent": [2, 2],
       "no-console": 1,
+      "no-const-assign": 2,
       "no-trailing-spaces": 2,
+      "no-var": 2,
+      "prefer-arrow-callback": 2,
+      "prefer-const": 2,
       "quotes": [2, "single"],
       "semi": [2, "always"]
     }

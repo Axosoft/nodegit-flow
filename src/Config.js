@@ -1,8 +1,8 @@
-var _getConfigKeys = function() {
+const _getConfigKeys = function() {
   return Object.keys(Config.getConfigDefault());
 };
 
-var _getConfigValue = function(repo, configKey) {
+const _getConfigValue = function(repo, configKey) {
   if (!repo) {
     return Promise.reject(new Error('A repository is required'));
   }
@@ -49,7 +49,7 @@ class Config {
    * @return An error message, or 0 if all required keys are present.
    */
   static validateConfig(config) {
-    var missingKeys = Config.getConfigRequiredKeys().filter(function(key) {
+    const missingKeys = Config.getConfigRequiredKeys().filter((key) => {
       return !config[key] || typeof config[key] !== 'string';
     });
 
@@ -70,19 +70,19 @@ class Config {
       return Promise.reject(new Error('A repository is required'));
     }
 
-    var configKeys = _getConfigKeys();
+    const configKeys = _getConfigKeys();
 
     return repo.config()
-      .then(function(config) {
-        var promises = configKeys.map(function(key) {
+      .then((config) => {
+        const promises = configKeys.map((key) => {
           return config.getString(key);
         });
 
         return Promise.all(promises);
       })
-      .then(function(values) {
-        var result = {};
-        configKeys.forEach(function(key, i) {
+      .then((values) => {
+        const result = {};
+        configKeys.forEach((key, i) => {
           result[key] = values[i];
         });
 
