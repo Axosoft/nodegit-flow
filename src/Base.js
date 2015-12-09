@@ -15,7 +15,7 @@ function createFlowInstance(repo) {
     Object.getOwnPropertyNames(GitFlowClass.prototype).forEach((propName) => {
       if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
         Flow[propName] = function() {
-          gitflowObject[propName].apply(gitflowObject, arguments);
+          return gitflowObject[propName].apply(gitflowObject, arguments);
         };
       }
     });
