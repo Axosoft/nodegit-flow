@@ -6,6 +6,24 @@ const GitFlowClasses = [Config, Feature, Hotfix, Release];
 
 const constants = require('./constants');
 
+function createFlowInstance(repo) {
+  const Flow = {};
+
+  // Magic to keep individual object context when using init methods
+  GitFlowClasses.forEach((GitFlowClass) => {
+    const gitflowObject = new GitFlowClass(repo);
+    Object.getOwnPropertyNames(GitFlowClass.prototype).forEach((propName) => {
+      if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
+        Flow[propName] = function() {
+          gitflowObject[propName].apply(gitflowObject, arguments);
+        };
+      }
+    });
+  });
+
+  return Flow;
+}
+
 class Base {
   /**
    * Initializes the repo to use gitflow
@@ -57,23 +75,7 @@ class Base {
             });
         }, Promise.resolve());
       })
-      .then(() => {
-        const flow = {};
-
-        // Magic to keep individual object context when using init methods
-        GitFlowClasses.forEach((GitFlowClass) => {
-          const gitflowObject = new GitFlowClass(repo);
-          Object.getOwnPropertyNames(GitFlowClass.prototype).forEach((propName) => {
-            if (propName !== 'constructor' && typeof GitFlowClass.prototype[propName] === 'function') {
-              flow[propName] = function() {
-                gitflowObject[propName].apply(gitflowObject, arguments);
-              };
-            }
-          });
-        });
-
-        return flow;
-      });
+      .then(() => createFlowInstance(repo));
   }
 
   /**
@@ -95,6 +97,17 @@ class Base {
         return Promise.all(promises)
           .then(() => true)
           .catch(() => false);
+      });
+  }
+
+  static open(repo) {
+    return Base.isInitialized(repo)
+      .then((isInitialized) => {
+        if (!isInitialized) {
+          return Promise.reject(new Error('The repository does not have gitflow initialized'));
+        }
+
+        return createFlowInstance(repo);
       });
   }
 }
