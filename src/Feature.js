@@ -26,6 +26,7 @@ class Feature {
 
     let featureBranchName;
     let featureBranch;
+
     return Config.getConfig(repo)
       .then((config) => {
         const featurePrefix = config['gitflow.prefix.feature'];
