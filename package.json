@@ -37,7 +37,7 @@
     "jasmine-node": "mhevery/jasmine-node#Jasmine2.0"
   },
   "peerDependencies": {
-    "nodegit": "^0.5.0"
+    "nodegit": ">=0.5.0"
   },
   "dependencies": {
     "nodegit-promise": "^4.0.0"
