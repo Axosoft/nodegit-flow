@@ -66,6 +66,7 @@ class Feature {
     let featureBranch;
     let developCommit;
     let featureCommit;
+    let mergeCommit;
     return Config.getConfig(repo)
       .then((config) => {
         const developBranchName = config['gitflow.branch.develop'];
@@ -91,21 +92,28 @@ class Feature {
           index.write();
           return index.writeTreeTo(repo);
         }
-        return Promise.reject(`Failed merging ${featureBranch.name()} into ${developBranch.name()}`);
+
+        // Reject with the index if there are conflicts
+        return Promise.reject(index);
       })
       .then((oid) => {
+        const ourSignature = repo.defaultSignature();
         const commitMessage = `Merged branch ${featureBranch.name()} into ${developBranch.name()}`;
         return repo.createCommit(
           developBranch.name(),
-          repo.defaultSignature(),
-          repo.defaultSignature(),
+          ourSignature,
+          ourSignature,
           commitMessage,
           oid,
           [developCommit, featureCommit]
         );
       })
-      .then(() => repo.checkoutBranch(developBranch))
-      .then(() => featureBranch.delete());
+      .then((_mergeCommit) => {
+        mergeCommit = _mergeCommit;
+        return repo.checkoutBranch(developBranch);
+      })
+      .then(() => featureBranch.delete())
+      .then(() => mergeCommit);
   }
 
   /**
