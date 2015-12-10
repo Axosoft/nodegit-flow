@@ -53,8 +53,67 @@ class Feature {
    * @param {Object} the repo to start a feature in
    * @param {String} branch name to finish feature with
    */
-  static finishFeature() {
-    // TODO
+  static finishFeature(repo, featureName) {
+    if (!repo) {
+      return Promise.reject(new Error('Repo is required'));
+    }
+
+    if (!featureName) {
+      return Promise.reject(new Error('Feature name is required'));
+    }
+
+    let developBranch;
+    let featureBranch;
+    let developCommit;
+    let featureCommit;
+    let mergeCommit;
+    return Config.getConfig(repo)
+      .then((config) => {
+        const developBranchName = config['gitflow.branch.develop'];
+        const featureBranchName = config['gitflow.prefix.feature'] + featureName;
+
+        return Promise.all(
+          [developBranchName, featureBranchName]
+            .map((branchName) => NodeGit.Branch.lookup(repo, branchName, NodeGit.Branch.BRANCH.LOCAL))
+        );
+      })
+      .then((branches) => {
+        developBranch = branches[0];
+        featureBranch = branches[1];
+        return Promise.all(branches.map((branch) => repo.getCommit(branch.target())));
+      })
+      .then((commits) => {
+        developCommit = commits[0];
+        featureCommit = commits[1];
+        return NodeGit.Merge.commits(repo, developCommit, featureCommit);
+      })
+      .then((index) => {
+        if (!index.hasConflicts()) {
+          index.write();
+          return index.writeTreeTo(repo);
+        }
+
+        // Reject with the index if there are conflicts
+        return Promise.reject(index);
+      })
+      .then((oid) => {
+        const ourSignature = repo.defaultSignature();
+        const commitMessage = `Merged branch ${featureBranch.name()} into ${developBranch.name()}`;
+        return repo.createCommit(
+          developBranch.name(),
+          ourSignature,
+          ourSignature,
+          commitMessage,
+          oid,
+          [developCommit, featureCommit]
+        );
+      })
+      .then((_mergeCommit) => {
+        mergeCommit = _mergeCommit;
+        return repo.checkoutBranch(developBranch);
+      })
+      .then(() => featureBranch.delete())
+      .then(() => mergeCommit);
   }
 
   /**
@@ -69,8 +128,8 @@ class Feature {
    * Instance method to finish a feature
    * @param {String} branch name to finish feature with
    */
-  finishFeature() {
-    // TODO
+  finishFeature(featureName) {
+    return Feature.finishFeature(this.repo, featureName);
   }
 }
 

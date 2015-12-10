@@ -4,6 +4,33 @@ const Feature = require('../../src/Feature');
 const NodeGit = require('../../src');
 const RepoUtils = require('../utils/RepoUtils');
 
+const expectStartFeatureSuccess = function expectStartFeatureSuccess(featureBranch, expectedBranchName) {
+  expect(featureBranch.isBranch()).toBeTruthy();
+  expect(featureBranch.shorthand()).toBe(expectedBranchName);
+  expect(featureBranch.isHead()).toBeTruthy();
+};
+
+const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBranch) {
+  let developBranch;
+  return NodeGit.Branch.lookup(
+    this.repo,
+    this.config['gitflow.branch.develop'],
+    NodeGit.Branch.BRANCH.LOCAL
+  )
+  .then((_developBranch) => {
+    developBranch = _developBranch;
+    expect(developBranch.isHead());
+    return this.repo.getCommit(developBranch.target());
+  })
+  .then((developCommit) => {
+    expect(developCommit.message()).toBe(`Merged branch ${featureBranch.name()} into ${developBranch.name()}`);
+    return NodeGit.Branch.lookup(this.repo, featureBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
+  })
+  .catch((err) => {
+    expect(err.message).toBe(`Cannot locate local branch '${featureBranch.name()}'`);
+  });
+};
+
 describe('Feature', function() {
   beforeEach(function(done) {
     this.repoName = 'featureRepo';
@@ -18,10 +45,10 @@ describe('Feature', function() {
         );
       })
       .then(() => {
-        const defaultConfig = NodeGit.Flow.getConfigDefault();
-        this.featurePrefix = defaultConfig['gitflow.prefix.feature'];
+        this.config = NodeGit.Flow.getConfigDefault();
+        this.featurePrefix = this.config['gitflow.prefix.feature'];
 
-        return NodeGit.Flow.init(this.repo, defaultConfig);
+        return NodeGit.Flow.init(this.repo, this.config);
       })
       .then((flow) => {
         this.flow = flow;
@@ -36,10 +63,46 @@ describe('Feature', function() {
   it('should be able to start feature statically', function(done) {
     const featureName = 'foobar';
     Feature.startFeature(this.repo, featureName)
-      .then((branch) => {
-        expect(branch.isBranch()).toBeTruthy();
-        expect(branch.shorthand()).toBe(this.featurePrefix + featureName);
+      .then((featureBranch) => {
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
         done();
       });
+  });
+
+  it('should be able to start feature using flow instance', function(done) {
+    const featureName = 'foobar';
+    this.flow.startFeature(featureName)
+      .then((featureBranch) => {
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+        done();
+      });
+  });
+
+  it('should be able to finish feature statically', function(done) {
+    const featureName = 'foobar';
+    let featureBranch;
+    Feature.startFeature(this.repo, featureName)
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+
+        return Feature.finishFeature(this.repo, featureName);
+      })
+      .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
+      .then(done);
+  });
+
+  it('should be able to finish feature on flow instance', function(done) {
+    const featureName = 'foobar';
+    let featureBranch;
+    this.flow.startFeature(featureName)
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+
+        return this.flow.finishFeature(featureName);
+      })
+      .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
+      .then(done);
   });
 });
