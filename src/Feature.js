@@ -3,6 +3,7 @@ const NodeGit = require('nodegit');
 const Config = require('./Config');
 
 const constants = require('./constants');
+const utils = require('./utils');
 
 class Feature {
   constructor(repo, config) {
@@ -98,7 +99,7 @@ class Feature {
       })
       .then((oid) => {
         const ourSignature = repo.defaultSignature();
-        const commitMessage = `Merged branch ${featureBranch.name()} into ${developBranch.name()}`;
+        const commitMessage = utils.Merge.getMergeMessage(developBranch, featureBranch);
         return repo.createCommit(
           developBranch.name(),
           ourSignature,

@@ -4,6 +4,8 @@ const Release = require('../../src/Release');
 const NodeGit = require('../../src');
 const RepoUtils = require('../utils/RepoUtils');
 
+const utils = require('../../src/utils');
+
 const expectStartReleaseSuccess = function expectStartReleaseSuccess(releaseBranch, expectedBranchName) {
   expect(releaseBranch.isBranch()).toBeTruthy();
   expect(releaseBranch.shorthand()).toBe(expectedBranchName);
@@ -31,8 +33,10 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBr
   .then((commits) => {
     developCommit = commits[0];
     masterCommit = commits[1];
-    expect(developCommit.message()).toBe(`Merged branch ${releaseBranch.name()} into ${developBranch.name()}`);
-    expect(masterCommit.message()).toBe(`Merged branch ${releaseBranch.name()} into ${masterBranch.name()}`);
+    const expectedDevelopCommitMessage = utils.Merge.getMergeMessage(developBranch, releaseBranch);
+    const expectedMasterCommitMessage = utils.Merge.getMergeMessage(masterBranch, releaseBranch);
+    expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
+    expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
     return NodeGit.Reference.lookup(this.repo, expectedTagName);
   })
   .then((tag) => {

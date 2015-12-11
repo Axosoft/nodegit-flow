@@ -3,6 +3,7 @@ const NodeGit = require('nodegit');
 const Config = require('./Config');
 
 const constants = require('./constants');
+const utils = require('./utils');
 
 class Release {
   constructor(repo) {
@@ -111,7 +112,7 @@ class Release {
       })
       .then((oid) => {
         const ourSignature = repo.defaultSignature();
-        const commitMessage = `Merged branch ${releaseBranch.name()} into ${masterBranch.name()}`;
+        const commitMessage = utils.Merge.getMergeMessage(masterBranch, releaseBranch);
 
         // Create the merge commit of release into master
         return repo.createCommit(
@@ -143,7 +144,7 @@ class Release {
       })
       .then((oid) => {
         const ourSignature = repo.defaultSignature();
-        const commitMessage = `Merged branch ${releaseBranch.name()} into ${developBranch.name()}`;
+        const commitMessage = utils.Merge.getMergeMessage(developBranch, releaseBranch);
         return repo.createCommit(
           developBranch.name(),
           ourSignature,

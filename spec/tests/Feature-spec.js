@@ -4,6 +4,8 @@ const Feature = require('../../src/Feature');
 const NodeGit = require('../../src');
 const RepoUtils = require('../utils/RepoUtils');
 
+const MergeUtils = require('../../src/utils/MergeUtils');
+
 const expectStartFeatureSuccess = function expectStartFeatureSuccess(featureBranch, expectedBranchName) {
   expect(featureBranch.isBranch()).toBeTruthy();
   expect(featureBranch.shorthand()).toBe(expectedBranchName);
@@ -23,7 +25,8 @@ const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBr
     return this.repo.getCommit(developBranch.target());
   })
   .then((developCommit) => {
-    expect(developCommit.message()).toBe(`Merged branch ${featureBranch.name()} into ${developBranch.name()}`);
+    const expectedCommitMessage = MergeUtils.getMergeMessage(developBranch, featureBranch);
+    expect(developCommit.message()).toBe(expectedCommitMessage);
     return NodeGit.Branch.lookup(this.repo, featureBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
   })
   .catch((err) => {
