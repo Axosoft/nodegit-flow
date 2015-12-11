@@ -111,4 +111,19 @@ describe('Release', function() {
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
       .then(done);
   });
+
+  it('should be able to finish release using flow instance', function(done) {
+    const releaseName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
+    let releaseBranch;
+    this.flow.startRelease(releaseName)
+      .then((_releaseBranch) => {
+        releaseBranch = _releaseBranch;
+        expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
+
+        return this.flow.finishRelease(releaseName);
+      })
+      .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
+      .then(done);
+  });
 });

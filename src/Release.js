@@ -53,12 +53,12 @@ class Release {
    * @param {Object} the repo to start a release in
    * @param {String} branch name to finish release with
    */
-  static finishRelease(repo, releaseName) {
+  static finishRelease(repo, releaseVersion) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
 
-    if (!releaseName) {
+    if (!releaseVersion) {
       return Promise.reject(new Error('Release name is required'));
     }
 
@@ -73,7 +73,7 @@ class Release {
     return Config.getConfig(repo)
       .then((config) => {
         const developBranchName = config['gitflow.branch.develop'];
-        const releaseBranchName = config['gitflow.prefix.release'] + releaseName;
+        const releaseBranchName = config['gitflow.prefix.release'] + releaseVersion;
         const masterBranchName = config['gitflow.branch.master'];
         versionPrefix = config['gitflow.prefix.versiontag'];
 
@@ -127,7 +127,7 @@ class Release {
       .then((oid) => NodeGit.Commit.lookup(repo, oid))
       // Tag the merge commit on master
       .then((commit) => {
-        const tagName = versionPrefix + releaseName;
+        const tagName = versionPrefix + releaseVersion;
         const ourSignature = repo.defaultSignature();
         return NodeGit.Tag.create(repo, tagName, commit, ourSignature, '', 0);
       })
@@ -174,8 +174,8 @@ class Release {
    * Instance method to finish a release
    * @param {String} branch name to finish release with
    */
-  finishRelease() {
-    // TODO
+  finishRelease(releaseVersion) {
+    return Release.finishRelease(this.repo, releaseVersion);
   }
 }
 
