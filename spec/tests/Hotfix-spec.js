@@ -1,0 +1,129 @@
+/* eslint prefer-arrow-callback: 0 */
+
+const Hotfix = require('../../src/Hotfix');
+const NodeGit = require('../../src');
+const RepoUtils = require('../utils/RepoUtils');
+
+const utils = require('../../src/utils');
+
+const expectStartHotfixSuccess = function expectStartHotfixSuccess(hotfixBranch, expectedBranchName) {
+  expect(hotfixBranch.isBranch()).toBeTruthy();
+  expect(hotfixBranch.shorthand()).toBe(expectedBranchName);
+  expect(hotfixBranch.isHead()).toBeTruthy();
+};
+
+const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranch, expectedTagName) {
+  let developBranch;
+  let masterBranch;
+  let developCommit;
+  let masterCommit;
+  return Promise.all([this.config['gitflow.branch.develop'], this.config['gitflow.branch.master']].map(
+    (branch) => NodeGit.Branch.lookup(
+      this.repo,
+      branch,
+      NodeGit.Branch.BRANCH.LOCAL
+    )
+  ))
+  .then((branches) => {
+    developBranch = branches[0];
+    masterBranch = branches[1];
+    expect(developBranch.isHead());
+    return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
+  })
+  .then((commits) => {
+    developCommit = commits[0];
+    masterCommit = commits[1];
+    const expectedDevelopCommitMessage = utils.Merge.getMergeMessage(developBranch, hotfixBranch);
+    const expectedMasterCommitMessage = utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
+    expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
+    expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
+    return NodeGit.Reference.lookup(this.repo, expectedTagName);
+  })
+  .then((tag) => {
+    expect(tag.isTag()).toBeTruthy();
+    expect(tag.target()).toEqual(masterCommit.id());
+    return NodeGit.Branch.lookup(this.repo, hotfixBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
+  })
+  .catch((err) => {
+    expect(err.message).toBe(`Cannot locate local branch '${hotfixBranch.name()}'`);
+  });
+};
+
+describe('Hotfix', function() {
+  beforeEach(function(done) {
+    this.repoName = 'hotfixRepo';
+    this.fileName = 'foobar.js';
+    return RepoUtils.createRepo(this.repoName)
+      .then((repo) => {
+        this.repo = repo;
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          this.fileName,
+          'Line1\nLine2\nLine3'
+        );
+      })
+      .then(() => {
+        this.config = NodeGit.Flow.getConfigDefault();
+        this.hotfixPrefix = this.config['gitflow.prefix.hotfix'];
+        this.versionPrefix = this.config['gitflow.prefix.versiontag'];
+
+        return NodeGit.Flow.init(this.repo, this.config);
+      })
+      .then((flow) => {
+        this.flow = flow;
+        done();
+      });
+  });
+
+  afterEach(function() {
+    RepoUtils.deleteRepo(this.repoName);
+  });
+
+  it('should be able to start hotfix statically', function(done) {
+    const hotfixName = '1.0.0';
+    Hotfix.startHotfix(this.repo, hotfixName)
+      .then((hotfixBranch) => {
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+        done();
+      });
+  });
+
+  it('should be able to start hotfix using flow instance', function(done) {
+    const hotfixName = '1.0.0';
+    this.flow.startHotfix(hotfixName)
+      .then((hotfixBranch) => {
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+        done();
+      });
+  });
+
+  it('should be able to finish hotfix statically', function(done) {
+    const hotfixName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
+    let hotfixBranch;
+    Hotfix.startHotfix(this.repo, hotfixName)
+      .then((_hotfixBranch) => {
+        hotfixBranch = _hotfixBranch;
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+
+        return Hotfix.finishHotfix(this.repo, hotfixName);
+      })
+      .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
+      .then(done);
+  });
+
+  it('should be able to finish hotfix using flow instance', function(done) {
+    const hotfixName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
+    let hotfixBranch;
+    this.flow.startHotfix(hotfixName)
+      .then((_hotfixBranch) => {
+        hotfixBranch = _hotfixBranch;
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+
+        return this.flow.finishHotfix(hotfixName);
+      })
+      .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
+      .then(done);
+  });
+});
