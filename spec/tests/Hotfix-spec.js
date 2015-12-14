@@ -62,7 +62,8 @@ describe('Hotfix', function() {
           'Line1\nLine2\nLine3'
         );
       })
-      .then(() => {
+      .then((firstCommit) => {
+        this.firstCommit = firstCommit;
         this.config = NodeGit.Flow.getConfigDefault();
         this.hotfixPrefix = this.config['gitflow.prefix.hotfix'];
         this.versionPrefix = this.config['gitflow.prefix.versiontag'];
@@ -105,9 +106,15 @@ describe('Hotfix', function() {
       .then((_hotfixBranch) => {
         hotfixBranch = _hotfixBranch;
         expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
-
-        return Hotfix.finishHotfix(this.repo, hotfixName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => Hotfix.finishHotfix(this.repo, hotfixName))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
       .then(done);
   });
@@ -121,8 +128,15 @@ describe('Hotfix', function() {
         hotfixBranch = _hotfixBranch;
         expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
 
-        return this.flow.finishHotfix(hotfixName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => this.flow.finishHotfix(hotfixName))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
       .then(done);
   });

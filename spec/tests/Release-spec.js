@@ -62,7 +62,8 @@ describe('Release', function() {
           'Line1\nLine2\nLine3'
         );
       })
-      .then(() => {
+      .then((firstCommit) => {
+        this.firstCommit = firstCommit;
         this.config = NodeGit.Flow.getConfigDefault();
         this.releasePrefix = this.config['gitflow.prefix.release'];
         this.versionPrefix = this.config['gitflow.prefix.versiontag'];
@@ -106,8 +107,15 @@ describe('Release', function() {
         releaseBranch = _releaseBranch;
         expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
 
-        return Release.finishRelease(this.repo, releaseName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'some content',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => Release.finishRelease(this.repo, releaseName))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
       .then(done);
   });
@@ -121,8 +129,15 @@ describe('Release', function() {
         releaseBranch = _releaseBranch;
         expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
 
-        return this.flow.finishRelease(releaseName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'some content',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => this.flow.finishRelease(releaseName))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
       .then(done);
   });

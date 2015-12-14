@@ -47,7 +47,8 @@ describe('Feature', function() {
           'Line1\nLine2\nLine3'
         );
       })
-      .then(() => {
+      .then((firstCommit) => {
+        this.firstCommit = firstCommit;
         this.config = NodeGit.Flow.getConfigDefault();
         this.featurePrefix = this.config['gitflow.prefix.feature'];
 
@@ -89,8 +90,15 @@ describe('Feature', function() {
         featureBranch = _featureBranch;
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
 
-        return Feature.finishFeature(this.repo, featureName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'someFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => Feature.finishFeature(this.repo, featureName))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
       .then(done);
   });
@@ -103,8 +111,15 @@ describe('Feature', function() {
         featureBranch = _featureBranch;
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
 
-        return this.flow.finishFeature(featureName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'someFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
       })
+      .then(() => this.flow.finishFeature(featureName))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
       .then(done);
   });
