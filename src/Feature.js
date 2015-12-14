@@ -67,6 +67,7 @@ class Feature {
     let featureBranch;
     let developCommit;
     let featureCommit;
+    let cancelDevelopMerge;
     let mergeCommit;
     return Config.getConfig(repo)
       .then((config) => {
@@ -81,14 +82,26 @@ class Feature {
       .then((branches) => {
         developBranch = branches[0];
         featureBranch = branches[1];
+
         return Promise.all(branches.map((branch) => repo.getCommit(branch.target())));
       })
       .then((commits) => {
         developCommit = commits[0];
         featureCommit = commits[1];
-        return NodeGit.Merge.commits(repo, developCommit, featureCommit);
+
+        // If the develop branch and feautre branch point to the same thing do not merge them
+        cancelDevelopMerge = developCommit.id().toString() === featureCommit.id().toString();
+
+        if (!cancelDevelopMerge) {
+          return NodeGit.Merge.commits(repo, developCommit, featureCommit);
+        }
+        return Promise.resolve();
       })
       .then((index) => {
+        if (cancelDevelopMerge) {
+          return Promise.resolve();
+        }
+
         if (!index.hasConflicts()) {
           index.write();
           return index.writeTreeTo(repo);
@@ -98,6 +111,10 @@ class Feature {
         return Promise.reject(index);
       })
       .then((oid) => {
+        if (cancelDevelopMerge) {
+          return Promise.resolve(featureCommit);
+        }
+
         const ourSignature = repo.defaultSignature();
         const commitMessage = utils.Merge.getMergeMessage(developBranch, featureBranch);
         return repo.createCommit(
