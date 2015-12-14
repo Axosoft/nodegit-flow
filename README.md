@@ -13,7 +13,7 @@ npm install --save nodegit-flow
 `nodegit-flow` is a drop in replacement for `nodegit`. All methods in `nodegit` are included in `nodegit-flow`.
 
 ```javascript
-var nodegit = require('nodegit-flow'); // wrap nodegit in gitflow
+var nodegit = require('nodegit-flow'); // wrap nodegit in git flow methods
 ```
 
 You can initialize an instance of `nodegit-flow` or use its static methods
