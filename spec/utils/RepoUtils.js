@@ -22,14 +22,16 @@ const RepoUtils = {
     return NodeGit.Repository.init(repoPath, 0);
   },
 
-  commitFileToRepo(repo, fileName, fileContent) {
+  commitFileToRepo(repo, fileName, fileContent, _commitMessage, parent) {
     const repoWorkDir = repo.workdir();
     const signature = NodeGit.Signature.create('Foo bar',
       'foo@bar.com', 123456789, 60);
+    const commitMessage = _commitMessage || 'initial commit';
+    const parents = (parent) ? [parent] : [];
 
     return fse.writeFile(path.join(repoWorkDir, fileName), fileContent)
       .then(() => this.addFileToIndex(repo, fileName))
-      .then((oid) => repo.createCommit('HEAD', signature, signature, 'initial commit', oid, []))
+      .then((oid) => repo.createCommit('HEAD', signature, signature, commitMessage, oid, parents))
       .then((commitOid) => repo.getCommit(commitOid));
   },
 
