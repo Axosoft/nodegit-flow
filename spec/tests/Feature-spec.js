@@ -12,7 +12,7 @@ const expectStartFeatureSuccess = function expectStartFeatureSuccess(featureBran
   expect(featureBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBranch, keepBranch) {
+const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBranch, keepBranch, message) {
   let developBranch;
   const promise =  NodeGit.Branch.lookup(
     this.repo,
@@ -25,7 +25,7 @@ const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBr
     return this.repo.getCommit(developBranch.target());
   })
   .then((developCommit) => {
-    const expectedCommitMessage = MergeUtils.getMergeMessage(developBranch, featureBranch);
+    const expectedCommitMessage = message || MergeUtils.getMergeMessage(developBranch, featureBranch);
     expect(developCommit.message()).toBe(expectedCommitMessage);
     return NodeGit.Branch.lookup(this.repo, featureBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
   });
@@ -168,6 +168,36 @@ describe('Feature', function() {
       })
       .then(() => this.flow.finishFeature(featureName, true))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
+      .then(done);
+  });
+
+  it('should be able to finish feature statically with a rebase', function(done) {
+    const featureName = 'foobar';
+    let featureBranch;
+    Feature.startFeature(this.repo, featureName)
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'someFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => this.repo.checkoutBranch('develop'))
+      .then(() => RepoUtils.commitFileToRepo(
+        this.repo,
+        'someOtherFile.js',
+        'Some content',
+        'third commit',
+        this.firstCommit,
+        'refs/heads/develop'
+      ))
+      .then(() => Feature.finishFeature(this.repo, featureName, false, true))
+      .then(() => expectFinishFeatureSuccess.call(this, featureBranch, false, 'second commit'))
       .then(done);
   });
 });
