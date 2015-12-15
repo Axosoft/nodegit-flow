@@ -12,12 +12,12 @@ const expectStartHotfixSuccess = function expectStartHotfixSuccess(hotfixBranch,
   expect(hotfixBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranch, expectedTagName) {
+const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranch, expectedTagName, keepBranch) {
   let developBranch;
   let masterBranch;
   let developCommit;
   let masterCommit;
-  return Promise.all([this.config['gitflow.branch.develop'], this.config['gitflow.branch.master']].map(
+  const promise = Promise.all([this.config['gitflow.branch.develop'], this.config['gitflow.branch.master']].map(
     (branch) => NodeGit.Branch.lookup(
       this.repo,
       branch,
@@ -42,11 +42,18 @@ const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranc
   .then((tag) => {
     expect(tag.isTag()).toBeTruthy();
     expect(tag.target()).toEqual(masterCommit.id());
-    return NodeGit.Branch.lookup(this.repo, hotfixBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
-  })
-  .catch((err) => {
-    expect(err.message).toBe(`Cannot locate local branch '${hotfixBranch.name()}'`);
+    return NodeGit.Branch.lookup(this.repo, hotfixBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
   });
+
+  if (!keepBranch) {
+    return promise
+      .catch((err) => {
+        expect(err.message).toBe(`Cannot locate local branch '${hotfixBranch.shorthand()}'`);
+      });
+  }
+
+  return promise;
+
 };
 
 describe('Hotfix', function() {
@@ -138,6 +145,49 @@ describe('Hotfix', function() {
       })
       .then(() => this.flow.finishHotfix(hotfixName))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
+      .then(done);
+  });
+
+  it('should be able to finish hotfix statically and keep the branch', function(done) {
+    const hotfixName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
+    let hotfixBranch;
+    Hotfix.startHotfix(this.repo, hotfixName)
+      .then((_hotfixBranch) => {
+        hotfixBranch = _hotfixBranch;
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => Hotfix.finishHotfix(this.repo, hotfixName, true))
+      .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
+      .then(done);
+  });
+
+  it('should be able to finish hotfix using flow instance and keep the branch', function(done) {
+    const hotfixName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
+    let hotfixBranch;
+    this.flow.startHotfix(hotfixName)
+      .then((_hotfixBranch) => {
+        hotfixBranch = _hotfixBranch;
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => this.flow.finishHotfix(hotfixName, true))
+      .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
       .then(done);
   });
 });

@@ -12,12 +12,12 @@ const expectStartReleaseSuccess = function expectStartReleaseSuccess(releaseBran
   expect(releaseBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBranch, expectedTagName) {
+const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBranch, expectedTagName, keepBranch) {
   let developBranch;
   let masterBranch;
   let developCommit;
   let masterCommit;
-  return Promise.all([this.config['gitflow.branch.develop'], this.config['gitflow.branch.master']].map(
+  const promise = Promise.all([this.config['gitflow.branch.develop'], this.config['gitflow.branch.master']].map(
     (branch) => NodeGit.Branch.lookup(
       this.repo,
       branch,
@@ -42,11 +42,17 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBr
   .then((tag) => {
     expect(tag.isTag()).toBeTruthy();
     expect(tag.target()).toEqual(masterCommit.id());
-    return NodeGit.Branch.lookup(this.repo, releaseBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
-  })
-  .catch((err) => {
-    expect(err.message).toBe(`Cannot locate local branch '${releaseBranch.name()}'`);
+    return NodeGit.Branch.lookup(this.repo, releaseBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
   });
+
+  if (!keepBranch) {
+    return promise
+      .catch((err) => {
+        expect(err.message).toBe(`Cannot locate local branch '${releaseBranch.shorthand()}'`);
+      });
+  }
+
+  return promise;
 };
 
 describe('Release', function() {
@@ -139,6 +145,50 @@ describe('Release', function() {
       })
       .then(() => this.flow.finishRelease(releaseName))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
+      .then(done);
+  });
+
+  it('should be able to finish release statically and keep the branch', function(done) {
+    const releaseName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
+    let releaseBranch;
+    Release.startRelease(this.repo, releaseName)
+      .then((_releaseBranch) => {
+        releaseBranch = _releaseBranch;
+        expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'some content',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => Release.finishRelease(this.repo, releaseName, true))
+      .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
+      .then(done);
+  });
+
+  it('should be able to finish release using flow instance and keep the branch', function(done) {
+    const releaseName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
+    let releaseBranch;
+    this.flow.startRelease(releaseName)
+      .then((_releaseBranch) => {
+        releaseBranch = _releaseBranch;
+        expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'anotherFile.js',
+          'some content',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => this.flow.finishRelease(releaseName, true))
+      .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
       .then(done);
   });
 });

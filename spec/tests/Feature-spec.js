@@ -12,9 +12,9 @@ const expectStartFeatureSuccess = function expectStartFeatureSuccess(featureBran
   expect(featureBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBranch) {
+const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBranch, keepBranch) {
   let developBranch;
-  return NodeGit.Branch.lookup(
+  const promise =  NodeGit.Branch.lookup(
     this.repo,
     this.config['gitflow.branch.develop'],
     NodeGit.Branch.BRANCH.LOCAL
@@ -27,11 +27,16 @@ const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBr
   .then((developCommit) => {
     const expectedCommitMessage = MergeUtils.getMergeMessage(developBranch, featureBranch);
     expect(developCommit.message()).toBe(expectedCommitMessage);
-    return NodeGit.Branch.lookup(this.repo, featureBranch.name(), NodeGit.Branch.BRANCH.LOCAL);
-  })
-  .catch((err) => {
-    expect(err.message).toBe(`Cannot locate local branch '${featureBranch.name()}'`);
+    return NodeGit.Branch.lookup(this.repo, featureBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
   });
+
+  if (!keepBranch) {
+    return promise.catch((err) => {
+      expect(err.message).toBe(`Cannot locate local branch '${featureBranch.shorthand()}'`);
+    });
+  }
+
+  return promise;
 };
 
 describe('Feature', function() {
@@ -121,6 +126,48 @@ describe('Feature', function() {
       })
       .then(() => this.flow.finishFeature(featureName))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
+      .then(done);
+  });
+
+  it('should be able to finish feature statically and keep the branch', function(done) {
+    const featureName = 'foobar';
+    let featureBranch;
+    Feature.startFeature(this.repo, featureName)
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'someFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => Feature.finishFeature(this.repo, featureName, true))
+      .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
+      .then(done);
+  });
+
+  it('should be able to finish feature on flow instance and keep the branch', function(done) {
+    const featureName = 'foobar';
+    let featureBranch;
+    this.flow.startFeature(featureName)
+      .then((_featureBranch) => {
+        featureBranch = _featureBranch;
+        expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
+
+        return RepoUtils.commitFileToRepo(
+          this.repo,
+          'someFile.js',
+          'Hello World',
+          'second commit',
+          this.firstCommit
+        );
+      })
+      .then(() => this.flow.finishFeature(featureName, true))
+      .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
       .then(done);
   });
 });
