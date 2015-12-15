@@ -54,8 +54,9 @@ class Feature {
    * @param {Object} the repo to start a feature in
    * @param {String} branch name to finish feature with
    * @param {Boolean} option to keep feature branch after finishing
+   * @param {Boolean} option to rebase on the develop branch instead of merge
    */
-  static finishFeature(repo, featureName, keepBranch) {
+  static finishFeature(repo, featureName, keepBranch, isRebase) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -70,10 +71,11 @@ class Feature {
     let featureCommit;
     let cancelDevelopMerge;
     let mergeCommit;
+    let featureBranchName;
     return Config.getConfig(repo)
       .then((config) => {
         const developBranchName = config['gitflow.branch.develop'];
-        const featureBranchName = config['gitflow.prefix.feature'] + featureName;
+        featureBranchName = config['gitflow.prefix.feature'] + featureName;
 
         return Promise.all(
           [developBranchName, featureBranchName]
@@ -91,10 +93,14 @@ class Feature {
         featureCommit = commits[1];
 
         // If the develop branch and feautre branch point to the same thing do not merge them
-        cancelDevelopMerge = developCommit.id().toString() === featureCommit.id().toString();
+        // or if the `isRebase` parameter is true do not merge
+        const isSameCommit = developCommit.id().toString() === featureCommit.id().toString();
+        cancelDevelopMerge = isSameCommit || isRebase;
 
         if (!cancelDevelopMerge) {
           return NodeGit.Merge.commits(repo, developCommit, featureCommit);
+        } else if (isRebase && !isSameCommit) {
+          return utils.Repo.rebase(developBranch, featureBranch, repo);
         }
         return Promise.resolve();
       })
@@ -136,7 +142,8 @@ class Feature {
           return Promise.resolve();
         }
 
-        return featureBranch.delete();
+        return NodeGit.Branch.lookup(repo, featureBranchName, NodeGit.Branch.BRANCH.LOCAL)
+          .then((branch) => branch.delete());
       })
       .then(() => mergeCommit);
   }
@@ -153,9 +160,10 @@ class Feature {
    * Instance method to finish a feature
    * @param {String} branch name to finish feature with
    * @param {Boolean} option to keep feature branch after finishing
+   * @param {Boolean} option to rebase on the develop branch instead of merge
    */
-  finishFeature(featureName, keepBranch) {
-    return Feature.finishFeature(this.repo, featureName, keepBranch);
+  finishFeature(featureName, keepBranch, isRebase) {
+    return Feature.finishFeature(this.repo, featureName, keepBranch, isRebase);
   }
 }
 
