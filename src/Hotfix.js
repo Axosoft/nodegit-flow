@@ -52,8 +52,9 @@ class Hotfix {
    * Static method to finish a hotfix
    * @param {Object} repo that contains the hotfix to finish
    * @param {String} branch name to finish hotfix with
+   * @param {Boolean} option to keep hotfix branch after finishing
    */
-  static finishHotfix(repo, hotfixVersion) {
+  static finishHotfix(repo, hotfixVersion, keepBranch) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -189,7 +190,13 @@ class Hotfix {
         mergeCommit = _mergeCommit;
         return repo.checkoutBranch(developBranch);
       })
-      .then(() => hotfixBranch.delete())
+      .then(() => {
+        if (keepBranch) {
+          return Promise.resolve();
+        }
+
+        return hotfixBranch.delete();
+      })
       .then(() => mergeCommit);
   }
 
@@ -204,9 +211,10 @@ class Hotfix {
   /**
    * Instance method to finish a hotfix
    * @param {String} branch name to finish hotfix with
+   * @param {Boolean} option to keep hotfix branch after finishing
    */
-  finishHotfix(hotfixVersion) {
-    return Hotfix.finishHotfix(this.repo, hotfixVersion);
+  finishHotfix(hotfixVersion, keepBranch) {
+    return Hotfix.finishHotfix(this.repo, hotfixVersion, keepBranch);
   }
 }
 

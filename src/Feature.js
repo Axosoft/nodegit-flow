@@ -53,8 +53,9 @@ class Feature {
    * Static method to finish a feature
    * @param {Object} the repo to start a feature in
    * @param {String} branch name to finish feature with
+   * @param {Boolean} option to keep feature branch after finishing
    */
-  static finishFeature(repo, featureName) {
+  static finishFeature(repo, featureName, keepBranch) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -130,7 +131,13 @@ class Feature {
         mergeCommit = _mergeCommit;
         return repo.checkoutBranch(developBranch);
       })
-      .then(() => featureBranch.delete())
+      .then(() => {
+        if (keepBranch) {
+          return Promise.resolve();
+        }
+
+        return featureBranch.delete();
+      })
       .then(() => mergeCommit);
   }
 
@@ -145,9 +152,10 @@ class Feature {
   /**
    * Instance method to finish a feature
    * @param {String} branch name to finish feature with
+   * @param {Boolean} option to keep feature branch after finishing
    */
-  finishFeature(featureName) {
-    return Feature.finishFeature(this.repo, featureName);
+  finishFeature(featureName, keepBranch) {
+    return Feature.finishFeature(this.repo, featureName, keepBranch);
   }
 }
 

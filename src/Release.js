@@ -52,8 +52,9 @@ class Release {
    * Static method to finish a release
    * @param {Object} the repo to start a release in
    * @param {String} branch name to finish release with
+   * @param {Boolean} option to keep release branch after finishing
    */
-  static finishRelease(repo, releaseVersion) {
+  static finishRelease(repo, releaseVersion, keepBranch) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -189,7 +190,13 @@ class Release {
         mergeCommit = _mergeCommit;
         return repo.checkoutBranch(developBranch);
       })
-      .then(() => releaseBranch.delete())
+      .then(() => {
+        if (keepBranch) {
+          return Promise.resolve();
+        }
+
+        return releaseBranch.delete();
+      })
       .then(() => mergeCommit);
   }
 
@@ -204,9 +211,10 @@ class Release {
   /**
    * Instance method to finish a release
    * @param {String} branch name to finish release with
+   * @param {Boolean} option to keep release branch after finishing
    */
-  finishRelease(releaseVersion) {
-    return Release.finishRelease(this.repo, releaseVersion);
+  finishRelease(releaseVersion, keepBranch) {
+    return Release.finishRelease(this.repo, releaseVersion, keepBranch);
   }
 }
 
