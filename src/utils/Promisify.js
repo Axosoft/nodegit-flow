@@ -1,19 +1,20 @@
 const Promise = require('nodegit-promise');
 
 const promisify = function promisify(fn) {
-  let resolve;
-  let reject;
-  const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
-    reject = _reject;
-  });
-
   return function() {
+    let resolve;
+    let reject;
+    const promise = new Promise((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
+    });
+
     fn(...arguments, (err, res) => {
       if (err) {
-        return reject(err);
+        reject(err);
+      } else {
+        resolve(res);
       }
-      return resolve(res);
     });
     return promise;
   };
