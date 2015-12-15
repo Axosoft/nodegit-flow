@@ -53,8 +53,9 @@ class Release {
    * @param {Object} the repo to start a release in
    * @param {String} branch name to finish release with
    * @param {Boolean} option to keep release branch after finishing
+   * @param {String} optional message to create an annotatd release tag with
    */
-  static finishRelease(repo, releaseVersion, keepBranch) {
+  static finishRelease(repo, releaseVersion, keepBranch, message) {
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -148,7 +149,8 @@ class Release {
       .then((commit) => {
         const tagName = versionPrefix + releaseVersion;
         const ourSignature = repo.defaultSignature();
-        return NodeGit.Tag.create(repo, tagName, commit, ourSignature, '', 0);
+        const tagMessage = message || '';
+        return NodeGit.Tag.create(repo, tagName, commit, ourSignature, tagMessage, 0);
       })
       // Merge release into develop
       .then(() => {
@@ -212,9 +214,10 @@ class Release {
    * Instance method to finish a release
    * @param {String} branch name to finish release with
    * @param {Boolean} option to keep release branch after finishing
+   * @param {String} optional message to create an annotatd release tag with
    */
-  finishRelease(releaseVersion, keepBranch) {
-    return Release.finishRelease(this.repo, releaseVersion, keepBranch);
+  finishRelease(releaseVersion, keepBranch, message) {
+    return Release.finishRelease(this.repo, releaseVersion, keepBranch, message);
   }
 }
 
