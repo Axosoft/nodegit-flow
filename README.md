@@ -26,14 +26,14 @@ nodegit.Flow.startRelease(repo, '1.0.0'); // or the static equivalent
 
 ## Methods
 
-* [Flow.finishRelease](#finishfeaturerepository-name-options)
+* [Flow.finishFeature](#finishfeaturerepository-name-options)
 * [Flow.finishHotfix](#finishhotfixrepository-name-options)
 * [Flow.finishRelease](#finishreleaserepository-name-options)
 * [Flow.getConfig](#getconfigrepository)
 * [Flow.getConfigDefault](#getconfigdefault)
 * [Flow.getConfigRequiredKeys](#getconfigrequiredkeysrepository)
 * [Flow.getDevelopBranch](#getdevelopbranchrepository)
-* [Flow.getReleasePrefix](#getfeatureprefixrepository)
+* [Flow.getFeaturePrefix](#getfeatureprefixrepository)
 * [Flow.getHotfixPrefix](#gethotfixprefixrepository)
 * [Flow.getMasterBranch](#getmasterbranchrepository)
 * [Flow.getReleasePrefix](#getreleaseprefixrepository)
@@ -42,13 +42,13 @@ nodegit.Flow.startRelease(repo, '1.0.0'); // or the static equivalent
 * [Flow.init](#initrepository-config)
 * [Flow.isInitialized](#isinitializedrepository)
 * [Flow.open](#openrepository)
-* [Flow.startRelease](#startfeaturerepository-name-options)
+* [Flow.startFeature](#startfeaturerepository-name-options)
 * [Flow.startHotfix](#starthotfixrepository-name)
 * [Flow.startRelease](#startreleaserepository-name)
 * [Flow.validateConfig](#validateconfigconfig)
 
-### finishRelease(repository, name, [options])
-By default `finishFeature` will merge the feature branch into the develop branch and delete the feature branch. If successful, finishRelease will resolve with the merge commit. If a merge conflict occurs `finishRelease` will reject with the index of the conflict.
+### finishFeature(repository, name, [options])
+By default `finishFeature` will merge the feature branch into the develop branch and delete the feature branch. If successful, finishFeature will resolve with the merge commit. If a merge conflict occurs `finishFeature` will reject with the index of the conflict.
 
 `options` Object
  * `isRebase` Boolean default=`false`
@@ -56,7 +56,7 @@ By default `finishFeature` will merge the feature branch into the develop branch
 
 Example:
 ```javascript
-NodeGit.Flow.finishRelease(
+NodeGit.Flow.finishFeature(
   repository,
   'my-feature'
 )
@@ -128,6 +128,9 @@ Returns the value stored within a repos git config with the key of `gitflow.pref
 ### getMasterBranch(repository)
 Returns the value stored within a repos git config with the key of `gitflow.branch.master`
 
+### getFeaturePrefix(repository)
+Returns the value stored within a repos git config with the key of `gitflow.prefix.feature`
+
 ### getReleasePrefix(repository)
 Returns the value stored within a repos git config with the key of `gitflow.prefix.release`
 
@@ -165,7 +168,7 @@ NodeGit.Flow.open(repository)
   });
 ```
 
-### startRelease(repository, name, [options])
+### startFeature(repository, name, [options])
 `options` Object
  * `sha` String
 
@@ -175,7 +178,7 @@ NodeGit.Flow.open(repository)
 
 Example:
 ```javascript
-NodeGit.Flow.startRelease(
+NodeGit.Flow.startFeature(
   repository,
   'my-feature',
   {sha: 'a7b7a15c94df9528339fd86b9808ec2d9c645705'}
