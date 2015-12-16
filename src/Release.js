@@ -52,10 +52,11 @@ class Release {
    * Static method to finish a release
    * @param {Object} the repo to start a release in
    * @param {String} branch name to finish release with
-   * @param {Boolean} option to keep release branch after finishing
-   * @param {String} optional message to create an annotatd release tag with
+   * @param {Object} options for finish release
    */
-  static finishRelease(repo, releaseVersion, keepBranch, message) {
+  static finishRelease(repo, releaseVersion, options = {}) {
+    const {keepBranch, message} = options;
+
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -216,8 +217,8 @@ class Release {
    * @param {Boolean} option to keep release branch after finishing
    * @param {String} optional message to create an annotatd release tag with
    */
-  finishRelease(releaseVersion, keepBranch, message) {
-    return Release.finishRelease(this.repo, releaseVersion, keepBranch, message);
+  finishRelease(releaseVersion, options) {
+    return Release.finishRelease(this.repo, releaseVersion, options);
   }
 }
 

@@ -53,10 +53,11 @@ class Feature {
    * Static method to finish a feature
    * @param {Object} the repo to start a feature in
    * @param {String} branch name to finish feature with
-   * @param {Boolean} option to keep feature branch after finishing
-   * @param {Boolean} option to rebase on the develop branch instead of merge
+   * @param {Object} options for finish feature
    */
-  static finishFeature(repo, featureName, keepBranch, isRebase) {
+  static finishFeature(repo, featureName, options = {}) {
+    const {keepBranch, isRebase} = options;
+
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -162,8 +163,8 @@ class Feature {
    * @param {Boolean} option to keep feature branch after finishing
    * @param {Boolean} option to rebase on the develop branch instead of merge
    */
-  finishFeature(featureName, keepBranch, isRebase) {
-    return Feature.finishFeature(this.repo, featureName, keepBranch, isRebase);
+  finishFeature(featureName, options) {
+    return Feature.finishFeature(this.repo, featureName, options);
   }
 }
 

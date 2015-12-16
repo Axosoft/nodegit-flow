@@ -54,7 +54,9 @@ class Hotfix {
    * @param {String} branch name to finish hotfix with
    * @param {Boolean} option to keep hotfix branch after finishing
    */
-  static finishHotfix(repo, hotfixVersion, keepBranch) {
+  static finishHotfix(repo, hotfixVersion, options = {}) {
+    const {keepBranch} = options;
+
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
     }
@@ -213,8 +215,8 @@ class Hotfix {
    * @param {String} branch name to finish hotfix with
    * @param {Boolean} option to keep hotfix branch after finishing
    */
-  finishHotfix(hotfixVersion, keepBranch) {
-    return Hotfix.finishHotfix(this.repo, hotfixVersion, keepBranch);
+  finishHotfix(hotfixVersion, options) {
+    return Hotfix.finishHotfix(this.repo, hotfixVersion, options);
   }
 }
 
