@@ -15,8 +15,11 @@ class Feature {
    * Static method to start a feature
    * @param {Object} the repo to start a feature in
    * @param {String} new branch name to start feature with
+   * @param {Object} the options for start feature
    */
-  static startFeature(repo, featureName) {
+  static startFeature(repo, featureName, options = {}) {
+    const {sha} = options;
+
     if (!repo) {
       return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
@@ -34,14 +37,18 @@ class Feature {
         const developBranchName = config['gitflow.branch.develop'];
 
         featureBranchName = featurePrefix + featureName;
+        if (sha) {
+          return NodeGit.Commit.lookup(repo, sha);
+        }
+
         return NodeGit.Branch.lookup(
           repo,
           developBranchName,
           NodeGit.Branch.BRANCH.LOCAL
-        );
+        )
+        .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()));
       })
-      .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()))
-      .then((localDevelopCommit) => repo.createBranch(featureBranchName, localDevelopCommit))
+      .then((fromCommit) => repo.createBranch(featureBranchName, fromCommit))
       .then((_featureBranch) => {
         featureBranch = _featureBranch;
         return repo.checkoutBranch(featureBranch);
@@ -153,8 +160,8 @@ class Feature {
    * Instance method to start a feature
    * @param {String} branch name to finish feature with
    */
-  startFeature(featureName) {
-    return Feature.startFeature(this.repo, featureName);
+  startFeature(featureName, options) {
+    return Feature.startFeature(this.repo, featureName, options);
   }
 
   /**
