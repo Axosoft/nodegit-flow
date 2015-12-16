@@ -145,7 +145,7 @@ describe('Feature', function() {
           this.firstCommit
         );
       })
-      .then(() => Feature.finishFeature(this.repo, featureName, true))
+      .then(() => Feature.finishFeature(this.repo, featureName, {keepBranch: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
       .then(done);
   });
@@ -166,7 +166,7 @@ describe('Feature', function() {
           this.firstCommit
         );
       })
-      .then(() => this.flow.finishFeature(featureName, true))
+      .then(() => this.flow.finishFeature(featureName, {keepBranch: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
       .then(done);
   });
@@ -196,7 +196,7 @@ describe('Feature', function() {
         this.firstCommit,
         'refs/heads/develop'
       ))
-      .then(() => Feature.finishFeature(this.repo, featureName, false, true))
+      .then(() => Feature.finishFeature(this.repo, featureName, {keepBranch: false, isRebase: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, false, 'second commit'))
       .then(done);
   });

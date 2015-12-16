@@ -165,7 +165,7 @@ describe('Release', function() {
           this.firstCommit
         );
       })
-      .then(() => Release.finishRelease(this.repo, releaseName, true))
+      .then(() => Release.finishRelease(this.repo, releaseName, {keepBranch: true}))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
       .then(done);
   });
@@ -187,7 +187,7 @@ describe('Release', function() {
           this.firstCommit
         );
       })
-      .then(() => this.flow.finishRelease(releaseName, true))
+      .then(() => this.flow.finishRelease(releaseName, {keepBranch: true}))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
       .then(done);
   });

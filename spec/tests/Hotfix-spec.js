@@ -53,7 +53,6 @@ const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranc
   }
 
   return promise;
-
 };
 
 describe('Hotfix', function() {
@@ -164,7 +163,7 @@ describe('Hotfix', function() {
           this.firstCommit
         );
       })
-      .then(() => Hotfix.finishHotfix(this.repo, hotfixName, true))
+      .then(() => Hotfix.finishHotfix(this.repo, hotfixName, {keepBranch: true}))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
       .then(done);
   });
@@ -186,7 +185,7 @@ describe('Hotfix', function() {
           this.firstCommit
         );
       })
-      .then(() => this.flow.finishHotfix(hotfixName, true))
+      .then(() => this.flow.finishHotfix(hotfixName, {keepBranch: true}))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
       .then(done);
   });
