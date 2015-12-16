@@ -26,23 +26,44 @@ nodegit.Flow.startRelease(repo, '1.0.0'); // or the static equivalent
 
 ## Methods
 
-* Flow.finishFeature
-* Flow.finishHotfix
-* Flow.finishRelease
-* Flow.getConfig
-* Flow.getConfigDefault
-* Flow.getConfigRequiredKeys
-* Flow.getDevelopBranch
-* Flow.getFeaturePrefix
-* Flow.getHotfixPrefix
-* Flow.getMasterBranch
-* Flow.getReleasePrefix
-* Flow.getSupportPrefix
-* Flow.getVersionTagPrefix
-* Flow.init
-* Flow.isInitialized
-* Flow.open
-* Flow.startFeature
-* Flow.startHotfix
-* Flow.startRelease
-* Flow.validateConfig
+* [Flow.finishFeature](./#finishfeaturerepository-name-options)
+* [Flow.finishHotfix](./#finishhotfixrepository-name-options)
+* [Flow.finishRelease](./#finishreleaserepository-name-options)
+* [Flow.getConfig](./#getconfigrepository)
+* [Flow.getConfigDefault](./#getconfigdefault)
+* [Flow.getConfigRequiredKeys](./#getconfigrequiredkeysrepository)
+* [Flow.getDevelopBranch](./#getdevelopbranchrepository)
+* [Flow.getFeaturePrefix](./#getfeatureprefixrepository)
+* [Flow.getHotfixPrefix](./#gethotfixprefixrepository)
+* [Flow.getMasterBranch](./#getmasterbranchrepository)
+* [Flow.getReleasePrefix](./#getreleaseprefixrepository)
+* [Flow.getSupportPrefix](./#getsupportprefixrepository)
+* [Flow.getVersionTagPrefix](./#getversiontagprefixrepository)
+* [Flow.init](./#initrepository-config)
+* [Flow.isInitialized](./#isinitializedrepository)
+* [Flow.open](./#openrepository)
+* [Flow.startFeature](./#startfeaturerepository-name-options)
+* [Flow.startHotfix](./#starthotfixrepository-name)
+* [Flow.startRelease](./#startreleaserepository-name)
+* [Flow.validateConfig](./#validateconfigconfig)
+
+### finishFeature(repository, name, [options])
+### finishHotfix(repository, name, [options])
+### finishRelease(repository, name, [options])
+### getConfig(repository)
+### getConfigDefault()
+### getConfigRequiredKeys(repository)
+### getDevelopBranch(repository)
+### getFeaturePrefix(repository)
+### getHotfixPrefix(repository)
+### getMasterBranch(repository)
+### getReleasePrefix(repository)
+### getSupportPrefix(repository)
+### getVersionTagPrefix(repository)
+### init(repository, config)
+### isInitialized(repository)
+### open(repository)
+### startFeature(repository, name, [options])
+### startHotfix(repository, name)
+### startRelease(repository, name)
+### validateConfig(config)
