@@ -172,7 +172,7 @@ NodeGit.Flow.open(repository)
 `options` Object
  * `sha` String
 
- `options` is an object with a `sha` that marks the starting commit of the feature. If no sha is passed in, the feature will start at the `develop` branch.
+ `options` is an object with a `sha` that marks the starting commit of the feature. If no `sha` is passed in, the feature will start at the `develop` branch.
 
  The name of the feature branch is the `featurePrefix` set in the git config appended with the passed in `name` parameter;
 
@@ -202,7 +202,12 @@ NodeGit.Flow.startHotfix(
   });
 ```
 
-### startRelease(repository, name)
+### startRelease(repository, name [options])
+`options` Object
+ * `sha` String
+
+ `options` is an object with a `sha` that marks the starting commit of the release. If no `sha` is passed in, the release will start at the `develop` branch.
+
 The name of the release branch is the `releasePrefix` set in the git config appended with the passed in `name` parameter;
 
 Example:
