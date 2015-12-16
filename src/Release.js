@@ -15,7 +15,9 @@ class Release {
    * @param {Object} the repo to start a release in
    * @param {String} new branch name to start release with
    */
-  static startRelease(repo, releaseVersion) {
+  static startRelease(repo, releaseVersion, options) {
+    const {sha} = options;
+
     if (!repo) {
       return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
     }
@@ -33,14 +35,19 @@ class Release {
         const developBranchName = config['gitflow.branch.develop'];
         releaseBranchName = releasePrefix + releaseVersion;
 
+        // If we have a sha look that up instead of the develop branch
+        if (sha) {
+          return NodeGit.Commit.lookup(repo, sha);
+        }
+
         return NodeGit.Branch.lookup(
           repo,
           developBranchName,
           NodeGit.Branch.BRANCH.LOCAL
-        );
+        )
+        .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()));
       })
-      .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()))
-      .then((localDevelopCommit) => repo.createBranch(releaseBranchName, localDevelopCommit))
+      .then((startingCommit) => repo.createBranch(releaseBranchName, startingCommit))
       .then((_releaseBranch) => {
         releaseBranch = _releaseBranch;
         return repo.checkoutBranch(releaseBranch);
