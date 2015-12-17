@@ -55,7 +55,7 @@ class Hotfix {
    * @param {Boolean} option to keep hotfix branch after finishing
    */
   static finishHotfix(repo, hotfixVersion, options = {}) {
-    const {keepBranch} = options;
+    const {keepBranch, message} = options;
 
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
@@ -150,7 +150,9 @@ class Hotfix {
       .then((commit) => {
         const tagName = versionPrefix + hotfixVersion;
         const ourSignature = repo.defaultSignature();
-        return NodeGit.Tag.create(repo, tagName, commit, ourSignature, '', 0);
+        const tagMessage = message || '';
+
+        return NodeGit.Tag.create(repo, tagName, commit, ourSignature, tagMessage, 0);
       })
       // Merge hotfix into develop
       .then(() => {
@@ -206,8 +208,8 @@ class Hotfix {
    * Instance method to start a hotfix
    * @param {String} new branch name to start hotfix with
    */
-  startHotfix(hotfixVersion) {
-    return Hotfix.startHotfix(this.repo, hotfixVersion);
+  startHotfix() {
+    return Hotfix.startHotfix(this.repo, ...arguments);
   }
 
   /**
@@ -215,8 +217,8 @@ class Hotfix {
    * @param {String} branch name to finish hotfix with
    * @param {Boolean} option to keep hotfix branch after finishing
    */
-  finishHotfix(hotfixVersion, options) {
-    return Hotfix.finishHotfix(this.repo, hotfixVersion, options);
+  finishHotfix() {
+    return Hotfix.finishHotfix(this.repo, ...arguments);
   }
 }
 

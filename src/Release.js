@@ -214,8 +214,8 @@ class Release {
    * Instance method to start a release
    * @param {String} branch name to finish release with
    */
-  startRelease(releaseVersion) {
-    return Release.startRelease(this.repo, releaseVersion);
+  startRelease() {
+    return Release.startRelease(this.repo, ...arguments);
   }
 
   /**
@@ -224,8 +224,8 @@ class Release {
    * @param {Boolean} option to keep release branch after finishing
    * @param {String} optional message to create an annotatd release tag with
    */
-  finishRelease(releaseVersion, options) {
-    return Release.finishRelease(this.repo, releaseVersion, options);
+  finishRelease() {
+    return Release.finishRelease(this.repo, ...arguments);
   }
 }
 

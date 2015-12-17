@@ -160,8 +160,8 @@ class Feature {
    * Instance method to start a feature
    * @param {String} branch name to finish feature with
    */
-  startFeature(featureName, options) {
-    return Feature.startFeature(this.repo, featureName, options);
+  startFeature() {
+    return Feature.startFeature(this.repo, ...arguments);
   }
 
   /**
@@ -170,8 +170,8 @@ class Feature {
    * @param {Boolean} option to keep feature branch after finishing
    * @param {Boolean} option to rebase on the develop branch instead of merge
    */
-  finishFeature(featureName, options) {
-    return Feature.finishFeature(this.repo, featureName, options);
+  finishFeature() {
+    return Feature.finishFeature(this.repo, ...arguments);
   }
 }
 
