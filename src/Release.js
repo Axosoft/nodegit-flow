@@ -15,7 +15,7 @@ class Release {
    * @param {Object} the repo to start a release in
    * @param {String} new branch name to start release with
    */
-  static startRelease(repo, releaseVersion, options) {
+  static startRelease(repo, releaseVersion, options = {}) {
     const {sha} = options;
 
     if (!repo) {
