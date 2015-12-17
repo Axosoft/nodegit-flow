@@ -70,6 +70,7 @@ By default `finishHotfix` will merge the hotfix branch into the develop branch a
 
 `options` Object
  * `keepBranch` Boolean default=`false`
+ * `message` String tag annotation default=`''`
 
 Example:
 ```javascript
@@ -88,6 +89,7 @@ By default `finishRelease` will merge the release branch into the develop branch
 `options` Object
  * `isRebase` Boolean default=`false`
  * `keepBranch` Boolean default=`false`
+ * `message` String tag annotation default=`''`
 
 Example:
 ```javascript
