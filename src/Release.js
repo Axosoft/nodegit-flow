@@ -115,42 +115,9 @@ class Release {
 
         // Merge the release branch into master
         if (!cancelMasterMerge) {
-          return NodeGit.Merge.commits(repo, releaseCommit, masterCommit);
+          return utils.Repo.merge(masterBranch, releaseBranch, repo);
         }
         return Promise.resolve();
-      })
-      .then((index) => {
-        if (cancelMasterMerge) {
-          return Promise.resolve();
-        }
-
-        if (!index.hasConflicts()) {
-          index.write();
-
-          // Write the merge index to the repo
-          return index.writeTreeTo(repo);
-        }
-
-        // Reject with the index if there are conflicts
-        return Promise.reject(index);
-      })
-      .then((oid) => {
-        if (cancelMasterMerge) {
-          return Promise.resolve(masterCommit.id());
-        }
-
-        const ourSignature = repo.defaultSignature();
-        const commitMessage = utils.Merge.getMergeMessage(masterBranch, releaseBranch);
-
-        // Create the merge commit of release into master
-        return repo.createCommit(
-          masterBranch.name(),
-          ourSignature,
-          ourSignature,
-          commitMessage,
-          oid,
-          [masterCommit, releaseCommit]
-        );
       })
       .then((oid) => NodeGit.Commit.lookup(repo, oid))
       // Tag the merge (or master) commit
@@ -163,38 +130,9 @@ class Release {
       // Merge release into develop
       .then(() => {
         if (!cancelDevelopMerge) {
-          return NodeGit.Merge.commits(repo, releaseCommit, developCommit);
+          return utils.Repo.merge(developBranch, releaseBranch, repo);
         }
         return Promise.resolve();
-      })
-      .then((index) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve();
-        }
-
-        if (!index.hasConflicts()) {
-          index.write();
-          return index.writeTreeTo(repo);
-        }
-
-        // Reject with the index if there are conflicts
-        return Promise.reject(index);
-      })
-      .then((oid) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve(releaseCommit);
-        }
-
-        const ourSignature = repo.defaultSignature();
-        const commitMessage = utils.Merge.getMergeMessage(developBranch, releaseBranch);
-        return repo.createCommit(
-          developBranch.name(),
-          ourSignature,
-          ourSignature,
-          commitMessage,
-          oid,
-          [developCommit, releaseCommit]
-        );
       })
       .then((_mergeCommit) => {
         mergeCommit = _mergeCommit;

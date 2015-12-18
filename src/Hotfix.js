@@ -108,42 +108,9 @@ class Hotfix {
 
         // Merge the hotfix branch into master
         if (!cancelMasterMerge) {
-          return NodeGit.Merge.commits(repo, hotfixCommit, masterCommit);
+          return utils.Repo.merge(masterBranch, hotfixBranch, repo);
         }
         return Promise.resolve();
-      })
-      .then((index) => {
-        if (cancelMasterMerge) {
-          return Promise.resolve();
-        }
-
-        if (!index.hasConflicts()) {
-          index.write();
-
-          // Write the merge index to the repo
-          return index.writeTreeTo(repo);
-        }
-
-        // Reject with the index if there are conflicts
-        return Promise.reject(index);
-      })
-      .then((oid) => {
-        if (cancelMasterMerge) {
-          return Promise.resolve(masterCommit);
-        }
-
-        const ourSignature = repo.defaultSignature();
-        const commitMessage = utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
-
-        // Create the merge commit of hotfix into master
-        return repo.createCommit(
-          masterBranch.name(),
-          ourSignature,
-          ourSignature,
-          commitMessage,
-          oid,
-          [masterCommit, hotfixCommit]
-        );
       })
       .then((oid) => NodeGit.Commit.lookup(repo, oid))
       // Tag the merge (or master) commit
@@ -157,38 +124,9 @@ class Hotfix {
       // Merge hotfix into develop
       .then(() => {
         if (!cancelDevelopMerge) {
-          return NodeGit.Merge.commits(repo, hotfixCommit, developCommit);
+          return utils.Repo.merge(developBranch, hotfixBranch, repo);
         }
         return Promise.resolve();
-      })
-      .then((index) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve();
-        }
-
-        if (!index.hasConflicts()) {
-          index.write();
-          return index.writeTreeTo(repo);
-        }
-
-        // Reject with the index if there are conflicts
-        return Promise.reject(index);
-      })
-      .then((oid) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve(hotfixCommit);
-        }
-
-        const ourSignature = repo.defaultSignature();
-        const commitMessage = utils.Merge.getMergeMessage(developBranch, hotfixBranch);
-        return repo.createCommit(
-          developBranch.name(),
-          ourSignature,
-          ourSignature,
-          commitMessage,
-          oid,
-          [developCommit, hotfixCommit]
-        );
       })
       .then((_mergeCommit) => {
         mergeCommit = _mergeCommit;

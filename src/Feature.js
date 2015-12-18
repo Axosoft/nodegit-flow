@@ -106,40 +106,11 @@ class Feature {
         cancelDevelopMerge = isSameCommit || isRebase;
 
         if (!cancelDevelopMerge) {
-          return NodeGit.Merge.commits(repo, developCommit, featureCommit);
+          return utils.Repo.merge(developBranch, featureBranch, repo);
         } else if (isRebase && !isSameCommit) {
           return utils.Repo.rebase(developBranch, featureBranch, repo);
         }
         return Promise.resolve();
-      })
-      .then((index) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve();
-        }
-
-        if (!index.hasConflicts()) {
-          index.write();
-          return index.writeTreeTo(repo);
-        }
-
-        // Reject with the index if there are conflicts
-        return Promise.reject(index);
-      })
-      .then((oid) => {
-        if (cancelDevelopMerge) {
-          return Promise.resolve(featureCommit);
-        }
-
-        const ourSignature = repo.defaultSignature();
-        const commitMessage = utils.Merge.getMergeMessage(developBranch, featureBranch);
-        return repo.createCommit(
-          developBranch.name(),
-          ourSignature,
-          ourSignature,
-          commitMessage,
-          oid,
-          [developCommit, featureCommit]
-        );
       })
       .then((_mergeCommit) => {
         mergeCommit = _mergeCommit;

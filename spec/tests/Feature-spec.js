@@ -124,7 +124,7 @@ describe('Feature', function() {
           this.firstCommit
         );
       })
-      .then(() => this.flow.finishFeature(featureName))
+      .then(() => this.flow.finishFeature(featureName, {keepBranch: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
       .then(done);
   });
