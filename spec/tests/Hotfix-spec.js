@@ -122,11 +122,7 @@ describe('Hotfix', function() {
       })
       .then(() => Hotfix.finishHotfix(this.repo, hotfixName))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
-      .then(done)
-      .catch((err) => {
-        console.log(err);
-        done();
-      });
+      .then(done);
   });
 
   it('should be able to finish hotfix using flow instance', function(done) {
