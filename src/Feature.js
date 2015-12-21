@@ -112,10 +112,6 @@ class Feature {
         }
         return Promise.resolve();
       })
-      .then((_mergeCommit) => {
-        mergeCommit = _mergeCommit;
-        return repo.checkoutBranch(developBranch);
-      })
       .then(() => {
         if (keepBranch) {
           return Promise.resolve();
