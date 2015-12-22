@@ -114,7 +114,7 @@ class Feature {
       })
       .then((_mergeCommit) => {
         mergeCommit = _mergeCommit;
-        if (isRebase) {
+        if (cancelDevelopMerge) {
           return repo.checkoutBranch(developBranch);
         }
         return Promise.resolve();
