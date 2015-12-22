@@ -5,6 +5,10 @@ const Config = require('./Config');
 const constants = require('./constants');
 const utils = require('./utils');
 
+/**
+ * All of this class' functions are attached to `NodeGit.Flow` or a `Flow` instance object
+ * @class
+ */
 class Feature {
   constructor(repo, config) {
     this.repo = repo;
@@ -12,10 +16,12 @@ class Feature {
   }
 
   /**
-   * Static method to start a feature
-   * @param {Object} the repo to start a feature in
-   * @param {String} new branch name to start feature with
-   * @param {Object} the options for start feature
+   * Starts a git flow "feature"
+   * @async
+   * @param {Object}  repo        The repository to start a feature in
+   * @param {String}  featureName The name of the feature to start
+   * @param {Object}  options     Options for start feature
+   * @return {Branch}   The nodegit branch for the feature
    */
   static startFeature(repo, featureName, options = {}) {
     const {sha} = options;
@@ -57,10 +63,12 @@ class Feature {
   }
 
   /**
-   * Static method to finish a feature
-   * @param {Object} the repo to start a feature in
-   * @param {String} branch name to finish feature with
-   * @param {Object} options for finish feature
+   * Finishes a git flow "feature"
+   * @async
+   * @param {Object}  repo        The repository to finish a feature in
+   * @param {String}  featureName The name of the feature to finish
+   * @param {Object}  options     Options for finish feature
+   * @return {Commit}   The commit created by finishing the feature
    */
   static finishFeature(repo, featureName, options = {}) {
     const {keepBranch, isRebase} = options;
@@ -131,18 +139,22 @@ class Feature {
   }
 
   /**
-   * Instance method to start a feature
-   * @param {String} branch name to finish feature with
+   * Starts a git flow "feature"
+   * @async
+   * @param {String}  featureName The name of the feature to start
+   * @param {Object}  options     Options for start feature
+   * @return {Branch}   The nodegit branch for the feature
    */
   startFeature() {
     return Feature.startFeature(this.repo, ...arguments);
   }
 
   /**
-   * Instance method to finish a feature
-   * @param {String} branch name to finish feature with
-   * @param {Boolean} option to keep feature branch after finishing
-   * @param {Boolean} option to rebase on the develop branch instead of merge
+   * Finishes a git flow "feature"
+   * @async
+   * @param {String}  featureName The name of the feature to finish
+   * @param {Object}  options     Options for finish feature
+   * @return {Commit}   The commit created by finishing the feature
    */
   finishFeature() {
     return Feature.finishFeature(this.repo, ...arguments);
