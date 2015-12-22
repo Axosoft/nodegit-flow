@@ -24,12 +24,17 @@ function createFlowInstance(repo) {
   return Flow;
 }
 
+/**
+ * All of this class' functions are attached to `NodeGit.Flow`
+ * @class
+ */
 class Base {
   /**
-   * Initializes the repo to use gitflow
-   * @param {Repository}  repo            The repository to initialize gitflow in
-   * @param {Object}      gitflowConfig   The gitflow configuration to use
+   * Initializes the repo to use git flow
    * @async
+   * @param {Repository}  repo            The repository to initialize git flow in
+   * @param {Object}      gitflowConfig   The git flow configuration to use
+   * @return {Flow} An instance of a flow object tied to the repository
    */
   static init(repo, gitflowConfig) {
     if (!repo) {
@@ -79,9 +84,10 @@ class Base {
   }
 
   /**
-   * Check if the repo is using gitflow
-   * @param {Repository}  repo  The nodegit repository instance to check
+   * Check if the repo is using git flow
    * @async
+   * @param {Repository}  repo  The nodegit repository instance to check
+   * @return {Boolean} Whether or not the repo has git flow initialized
    */
   static isInitialized(repo) {
     if (!repo) {
@@ -100,6 +106,12 @@ class Base {
       });
   }
 
+  /**
+   * Creates a Flow instance for a repo that already has git flow initialized
+   * @async
+   * @param {Repository}  repo  The target nodegit repository
+   * @return {Flow} An instance of a flow object tied to the repository
+   */
   static open(repo) {
     return Base.isInitialized(repo)
       .then((isInitialized) => {
