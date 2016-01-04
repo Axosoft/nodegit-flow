@@ -5,15 +5,22 @@ const Config = require('./Config');
 const constants = require('./constants');
 const utils = require('./utils');
 
+/**
+ * All of this class' functions are attached to `NodeGit.Flow` or a `Flow` instance object
+ * @class
+ */
 class Release {
   constructor(repo) {
     this.repo = repo;
   }
 
   /**
-   * Static method to start a release
-   * @param {Object} the repo to start a release in
-   * @param {String} new branch name to start release with
+   * Starts a git flow "release"
+   * @async
+   * @param {Object}  repo            The repository to start a release in
+   * @param {String}  releaseVersion  The version of the release to start
+   * @param {Object}  options         Options for start release
+   * @return {Branch}   The nodegit branch for the release
    */
   static startRelease(repo, releaseVersion, options = {}) {
     const {sha} = options;
@@ -56,10 +63,12 @@ class Release {
   }
 
   /**
-   * Static method to finish a release
-   * @param {Object} the repo to start a release in
-   * @param {String} branch name to finish release with
-   * @param {Object} options for finish release
+   * Finishes a git flow "release"
+   * @async
+   * @param {Object}  repo            The repository to finish a release in
+   * @param {String}  releaseVersion  The version of the release to finish
+   * @param {Object}  options         Options for finish release
+   * @return {Commit}   The commit created by finishing the release
    */
   static finishRelease(repo, releaseVersion, options = {}) {
     const {keepBranch, message} = options;
@@ -143,18 +152,22 @@ class Release {
   }
 
   /**
-   * Instance method to start a release
-   * @param {String} branch name to finish release with
+   * Starts a git flow "release"
+   * @async
+   * @param {String}  releaseVersion  The version of the release to start
+   * @param {Object}  options         Options for start release
+   * @return {Branch}   The nodegit branch for the release
    */
   startRelease() {
     return Release.startRelease(this.repo, ...arguments);
   }
 
   /**
-   * Instance method to finish a release
-   * @param {String} branch name to finish release with
-   * @param {Boolean} option to keep release branch after finishing
-   * @param {String} optional message to create an annotatd release tag with
+   * Finishes a git flow "release"
+   * @async
+   * @param {String}  releaseVersion  The version of the release to finish
+   * @param {Object}  options         Options for finish release
+   * @return {Commit}   The commit created by finishing the release
    */
   finishRelease() {
     return Release.finishRelease(this.repo, ...arguments);

@@ -5,15 +5,22 @@ const Config = require('./Config');
 const constants = require('./constants');
 const utils = require('./utils');
 
+/**
+ * All of this class' functions are attached to `NodeGit.Flow` or a `Flow` instance object
+ * @class
+ */
 class Hotfix {
   constructor(repo) {
     this.repo = repo;
   }
 
   /**
-   * Static method to start a hotfix
-   * @param {Object} repo to start the hotfix in
-   * @param {String} branch name to finish hotfix with
+   * Starts a git flow "hotfix"
+   * @async
+   * @param {Object}  repo          The repository to start a hotfix in
+   * @param {String}  hotfixVersion The version of the hotfix to start
+   * @param {Object}  options       Options for start hotfix
+   * @return {Branch}   The nodegit branch for the hotfix
    */
   static startHotfix(repo, hotfixVersion) {
     if (!repo) {
@@ -49,10 +56,12 @@ class Hotfix {
   }
 
   /**
-   * Static method to finish a hotfix
-   * @param {Object} repo that contains the hotfix to finish
-   * @param {String} branch name to finish hotfix with
-   * @param {Boolean} option to keep hotfix branch after finishing
+   * Finishes a git flow "hotfix"
+   * @async
+   * @param {Object}  repo            The repository to finish a hotfix in
+   * @param {String}  hotfixVersion   The version of the hotfix to finish
+   * @param {Object}  options         Options for finish hotfix
+   * @return {Commit}   The commit created by finishing the hotfix
    */
   static finishHotfix(repo, hotfixVersion, options = {}) {
     const {keepBranch, message} = options;
@@ -137,17 +146,22 @@ class Hotfix {
   }
 
   /**
-   * Instance method to start a hotfix
-   * @param {String} new branch name to start hotfix with
+   * Starts a git flow "hotfix"
+   * @async
+   * @param {String}  hotfixVersion The version of the hotfix to start
+   * @param {Object}  options       Options for start hotfix
+   * @return {Branch}   The nodegit branch for the hotfix
    */
   startHotfix() {
     return Hotfix.startHotfix(this.repo, ...arguments);
   }
 
   /**
-   * Instance method to finish a hotfix
-   * @param {String} branch name to finish hotfix with
-   * @param {Boolean} option to keep hotfix branch after finishing
+   * Finishes a git flow "hotfix"
+   * @async
+   * @param {String}  hotfixVersion   The version of the hotfix to finish
+   * @param {Object}  options         Options for finish hotfix
+   * @return {Commit}   The commit created by finishing the hotfix
    */
   finishHotfix() {
     return Hotfix.finishHotfix(this.repo, ...arguments);
