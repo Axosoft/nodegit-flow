@@ -1,5 +1,8 @@
 /* eslint prefer-arrow-callback: 0 */
 
+const NodeGit = require('nodegit');
+const Promise = require('nodegit-promise');
+
 const Base = require('../../src/Base');
 const Config = require('../../src/Config');
 
@@ -13,11 +16,10 @@ describe('Base', function() {
     this.repo = {
       config() {
         return Promise.resolve(repoConfig);
-      },
-      getBranch() {
-        return Promise.resolve();
       }
     };
+
+    spyOn(NodeGit.Branch, 'lookup').and.returnValue(Promise.resolve());
   });
 
   it('should be able to require Base', function() {

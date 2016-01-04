@@ -1,3 +1,5 @@
+const NodeGit = require('nodegit');
+
 const Config = require('./Config');
 const Feature = require('./Feature');
 const Hotfix = require('./Hotfix');
@@ -60,13 +62,13 @@ class Base {
     const masterBranchName = configToUse['gitflow.branch.master'];
     const developBranchName = configToUse['gitflow.branch.develop'];
 
-    return repo.getBranch(masterBranchName)
+    return NodeGit.Branch.lookup(repo, masterBranchName, NodeGit.Branch.BRANCH.LOCAL)
       .catch(() => {
-        return Promise.reject(new Error('The branch set as the master branch must already exist'));
+        return Promise.reject(new Error('The branch set as the `master` branch must already exist locally'));
       })
       .then(() => {
         // Create the `develop` branch if it does not already exist
-        return repo.getBranch(developBranchName)
+        return NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL)
           .catch(() => repo.getBranchCommit(masterBranchName)
               .then((commit) => repo.createBranch(developBranchName, commit.id())));
       })
