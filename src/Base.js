@@ -32,6 +32,33 @@ function createFlowInstance(repo) {
  */
 class Base {
   /**
+   * Check if the repo is initialized with git flow and its develop branch exists
+   * @async
+   * @param {Repository}  repo  The nodegit repository instance to check
+   * @return {Boolean} Whether or not the develop branch as specified in the git config exists
+   */
+  static developBranchExists(repo) {
+    if (!repo) {
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
+    }
+
+    return this.isInitialized(repo)
+      .then((isInitialized) => {
+        if (!isInitialized) {
+          return Promise.reject(new Error(constants.ErrorMessage.GIT_FLOW_NOT_INITIALIZED));
+        }
+
+        return repo.config()
+          .then((config) => {
+            const developBranchName = config.getString('gitflow.branch.develop');
+            return NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL);
+          })
+          .then(() => true)
+          .catch(() => false);
+      });
+  }
+
+  /**
    * Initializes the repo to use git flow
    * @async
    * @param {Repository}  repo            The repository to initialize git flow in
@@ -103,6 +130,33 @@ class Base {
         });
 
         return Promise.all(promises)
+          .then(() => true)
+          .catch(() => false);
+      });
+  }
+
+  /**
+   * Check if the repo is initialized with git flow and its master branch exists
+   * @async
+   * @param {Repository}  repo  The nodegit repository instance to check
+   * @return {Boolean} Whether or not the master branch as specified in the git config exists
+   */
+  static masterBranchExists(repo) {
+    if (!repo) {
+      return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
+    }
+
+    return Base.isInitialized(repo)
+      .then((isInitialized) => {
+        if (!isInitialized) {
+          return Promise.reject(new Error(constants.ErrorMessage.GIT_FLOW_NOT_INITIALIZED));
+        }
+
+        return repo.config()
+          .then((config) => {
+            const masterBranchName = config.getString('gitflow.branch.master');
+            return NodeGit.Branch.lookup(repo, masterBranchName, NodeGit.Branch.BRANCH.LOCAL);
+          })
           .then(() => true)
           .catch(() => false);
       });
