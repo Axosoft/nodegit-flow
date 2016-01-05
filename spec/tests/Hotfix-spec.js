@@ -12,7 +12,13 @@ const expectStartHotfixSuccess = function expectStartHotfixSuccess(hotfixBranch,
   expect(hotfixBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranch, expectedTagName, keepBranch) {
+const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(
+  hotfixBranch,
+  expectedTagName,
+  keepBranch,
+  developMergeMessage,
+  masterMergeMessage
+) {
   let developBranch;
   let masterBranch;
   let developCommit;
@@ -33,8 +39,10 @@ const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(hotfixBranc
   .then((commits) => {
     developCommit = commits[0];
     masterCommit = commits[1];
-    const expectedDevelopCommitMessage = utils.Merge.getMergeMessage(developBranch, hotfixBranch);
-    const expectedMasterCommitMessage = utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
+    const expectedDevelopCommitMessage
+      = developMergeMessage || utils.Merge.getMergeMessage(developBranch, hotfixBranch);
+    const expectedMasterCommitMessage
+      = masterMergeMessage || utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
     expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
     expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
     return NodeGit.Reference.lookup(this.repo, expectedTagName);
@@ -187,6 +195,28 @@ describe('Hotfix', function() {
       })
       .then(() => this.flow.finishHotfix(hotfixName, {keepBranch: true}))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
+      .then(done);
+  });
+
+  it('should be able to finish a hotfix that is still pointed at master', function(done) {
+    const hotfixName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
+    const expectedCommitMessage = 'initial commit';
+    let hotfixBranch;
+    this.flow.startHotfix(hotfixName)
+      .then((_hotfixBranch) => {
+        hotfixBranch = _hotfixBranch;
+        expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
+        return this.flow.finishHotfix(hotfixName, {keepBranch: true});
+      })
+      .then(() => expectFinishHotfixSuccess.call(
+        this,
+        hotfixBranch,
+        fullTagName,
+        true,
+        expectedCommitMessage,
+        expectedCommitMessage
+      ))
       .then(done);
   });
 });

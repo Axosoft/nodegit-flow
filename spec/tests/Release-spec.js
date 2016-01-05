@@ -12,7 +12,13 @@ const expectStartReleaseSuccess = function expectStartReleaseSuccess(releaseBran
   expect(releaseBranch.isHead()).toBeTruthy();
 };
 
-const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBranch, expectedTagName, keepBranch) {
+const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(
+  releaseBranch,
+  expectedTagName,
+  keepBranch,
+  developCommitMessage,
+  masterCommitMessage
+) {
   let developBranch;
   let masterBranch;
   let developCommit;
@@ -33,8 +39,10 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(releaseBr
   .then((commits) => {
     developCommit = commits[0];
     masterCommit = commits[1];
-    const expectedDevelopCommitMessage = utils.Merge.getMergeMessage(developBranch, releaseBranch);
-    const expectedMasterCommitMessage = utils.Merge.getMergeMessage(masterBranch, releaseBranch);
+    const expectedDevelopCommitMessage =
+      developCommitMessage || utils.Merge.getMergeMessage(developBranch, releaseBranch);
+    const expectedMasterCommitMessage =
+      masterCommitMessage || utils.Merge.getMergeMessage(masterBranch, releaseBranch);
     expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
     expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
     return NodeGit.Reference.lookup(this.repo, expectedTagName);
@@ -189,6 +197,21 @@ describe('Release', function() {
       })
       .then(() => this.flow.finishRelease(releaseName, {keepBranch: true}))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
+      .then(done);
+  });
+
+  it('should be able to finish release while branch is still pointed at master', function(done) {
+    const releaseName = '1.0.0';
+    const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
+    const commitMessage = 'initial commit';
+    let releaseBranch;
+    this.flow.startRelease(releaseName)
+      .then((_releaseBranch) => {
+        releaseBranch = _releaseBranch;
+        expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
+        return this.flow.finishRelease(releaseName, {keepBranch: true});
+      })
+      .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true, commitMessage, commitMessage))
       .then(done);
   });
 });

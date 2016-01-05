@@ -122,19 +122,15 @@ class Release {
         cancelDevelopMerge = developCommit.id().toString() === releaseCommit.id().toString();
         cancelMasterMerge = masterCommit.id().toString() === releaseCommit.id().toString();
 
+        const tagName = versionPrefix + releaseVersion;
         // Merge the release branch into master
         if (!cancelMasterMerge) {
-          return utils.Repo.merge(masterBranch, releaseBranch, repo);
+          return utils.Repo.merge(masterBranch, releaseBranch, repo)
+            .then((oid) => utils.Tag.create(oid, tagName, message, repo));
         }
-        return Promise.resolve();
-      })
-      .then((oid) => NodeGit.Commit.lookup(repo, oid))
-      // Tag the merge (or master) commit
-      .then((commit) => {
-        const tagName = versionPrefix + releaseVersion;
-        const ourSignature = repo.defaultSignature();
-        const tagMessage = message || '';
-        return NodeGit.Tag.create(repo, tagName, commit, ourSignature, tagMessage, 0);
+
+        const masterOid = NodeGit.Oid.fromString(masterCommit.id().toString());
+        return utils.Tag.create(masterOid, tagName, message, repo);
       })
       // Merge release into develop
       .then(() => {
