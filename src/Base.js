@@ -49,10 +49,8 @@ class Base {
         }
 
         return repo.config()
-          .then((config) => {
-            const developBranchName = config.getString('gitflow.branch.develop');
-            return NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL);
-          })
+          .then((config) => config.getString('gitflow.branch.develop'))
+          .then((developBranchName) => NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL))
           .then(() => true)
           .catch(() => false);
       });
@@ -153,10 +151,8 @@ class Base {
         }
 
         return repo.config()
-          .then((config) => {
-            const masterBranchName = config.getString('gitflow.branch.master');
-            return NodeGit.Branch.lookup(repo, masterBranchName, NodeGit.Branch.BRANCH.LOCAL);
-          })
+          .then((config) => config.getString('gitflow.branch.master'))
+          .then((masterBranchName) => NodeGit.Branch.lookup(repo, masterBranchName, NodeGit.Branch.BRANCH.LOCAL))
           .then(() => true)
           .catch(() => false);
       });
