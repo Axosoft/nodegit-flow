@@ -1,6 +1,6 @@
 {
   "name": "nodegit-flow",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
   "main": "build/src/index.js",
   "scripts": {
