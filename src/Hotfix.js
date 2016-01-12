@@ -115,6 +115,15 @@ class Hotfix {
         cancelDevelopMerge = developCommit.id().toString() === hotfixCommit.id().toString();
         cancelMasterMerge = masterCommit.id().toString() === hotfixCommit.id().toString();
 
+        // Merge hotfix into develop
+        if (!cancelDevelopMerge) {
+          return utils.Repo.merge(developBranch, hotfixBranch, repo);
+        }
+        return Promise.resolve();
+      })
+      .then((_mergeCommit) => {
+        mergeCommit = _mergeCommit;
+
         const tagName = versionPrefix + hotfixVersion;
         // Merge the hotfix branch into master
         if (!cancelMasterMerge) {
@@ -126,16 +135,7 @@ class Hotfix {
         const masterOid = NodeGit.Oid.fromString(masterCommit.id().toString());
         return utils.Tag.create(masterOid, tagName, message, repo);
       })
-      // Merge hotfix into develop
       .then(() => {
-        if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, hotfixBranch, repo);
-        }
-        return Promise.resolve();
-      })
-      .then((_mergeCommit) => {
-        mergeCommit = _mergeCommit;
-
         if (keepBranch) {
           return Promise.resolve();
         }
