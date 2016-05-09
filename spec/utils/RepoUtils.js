@@ -7,12 +7,11 @@ const RepoUtils = {
   repoDir: '../repos',
 
   addFileToIndex(repository, fileName) {
-    return repository.openIndex()
+    return repository.index()
       .then((index) => {
-        index.read(1);
-        index.addByPath(fileName);
-        index.write();
-        return index.writeTree();
+        return index.addByPath(fileName)
+          .then(() => index.write())
+          .then(() => index.writeTree());
       });
   },
 
