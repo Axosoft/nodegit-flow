@@ -20,7 +20,7 @@ const RepoUtils = {
         };
         return NodeGit.Merge.merge(repo, fromCommit, null, checkoutOpts);
       })
-      .then(() => repo.openIndex())
+      .then(() => repo.index())
       .then((index) => {
         if (index.hasConflicts && index.hasConflicts()) {
           return Promise.reject(index);
