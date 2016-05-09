@@ -1,4 +1,3 @@
-const Promise = require('nodegit-promise');
 const NodeGit = require('nodegit');
 const Config = require('./Config');
 

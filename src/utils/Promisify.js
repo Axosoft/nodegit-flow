@@ -1,5 +1,3 @@
-const Promise = require('nodegit-promise');
-
 const promisify = function promisify(fn) {
   return function() {
     let resolve;
