@@ -1,7 +1,6 @@
 /* eslint prefer-arrow-callback: 0 */
 
 const NodeGit = require('nodegit');
-const Promise = require('nodegit-promise');
 
 const Base = require('../../src/Base');
 const Config = require('../../src/Config');
