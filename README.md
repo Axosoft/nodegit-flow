@@ -214,7 +214,7 @@ The name of the release branch is the `releasePrefix` set in the git config appe
 
 Example:
 ```javascript
-NodeGit.Flow.startHotfix(
+NodeGit.Flow.startRelease(
   repository,
   '0.2.0'
 )
