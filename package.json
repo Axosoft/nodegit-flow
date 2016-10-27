@@ -2,13 +2,17 @@
   "name": "nodegit-flow",
   "version": "0.3.0",
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
-  "main": "build/src/index.js",
+  "main": "build/index.js",
   "scripts": {
-    "compile": "babel --sourceMaps --presets es2015 -d ./build/spec ./spec && babel --sourceMaps --presets es2015 -d ./build/src ./src",
+    "compile": "babel --presets es2015 --source-maps --debug 3050 ./spec --out-dir ./build/spec && babel --presets es2015 --source-maps --debug 3051 ./src --out-dir ./build",
+    "watch": "concurrently --raw \"babel --presets es2015 --source-maps --watch --debug 3050 ./spec --out-dir ./build/spec\" \"babel --presets es2015 --source-maps --watch --debug 3051 ./src --out-dir ./build\"",
     "eslint": "./node_modules/.bin/eslint src spec",
-    "prepublish": "babel --presets es2015 -d ./build/src ./src",
+    "prepublish": "babel --presets es2015 ./src --out-dir ./build",
     "debug-test": "npm run eslint && npm run compile && node-debug --debug-brk node_modules/.bin/jasmine-node build/spec/tests",
     "test": "npm run eslint && npm run compile && node_modules/.bin/jasmine-node build/spec/tests"
+  },
+  "bin": {
+    "git-flow": "./build/bin/git-flow.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +35,8 @@
   "homepage": "https://github.com/smith-kyle/nodegit-flow#readme",
   "devDependencies": {
     "babel-cli": "^6.3.15",
-    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-es2015": "^6.18.0",
+    "concurrently": "^3.1.0",
     "eslint": "^1.9.0",
     "fs-extra": "^0.26.2",
     "jasmine-node": "mhevery/jasmine-node#Jasmine2.0",
@@ -39,5 +44,10 @@
   },
   "peerDependencies": {
     "nodegit": ">=0.13.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "prompt": "^1.0.0",
+    "yargs": "^6.3.0"
   }
 }
