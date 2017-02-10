@@ -3,8 +3,7 @@ const NodeGit = require('nodegit');
 const MergeUtils = require('./MergeUtils');
 
 const RepoUtils = {
-  merge(toBranch, fromBranch, repo) {
-    let treeOid;
+  merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a) {
     return Promise.resolve()
       .then(() => {
         if (!toBranch.isHead()) {
@@ -27,20 +26,16 @@ const RepoUtils = {
 
         return index.writeTree();
       })
-      .then((oid) => {
-        treeOid = oid;
-
-        return Promise.all([
-          repo.getHeadCommit(),
-          repo.getBranchCommit('MERGE_HEAD')
-        ]);
-      })
-      .then((commits) => {
-        const signature = repo.defaultSignature();
-        const message = MergeUtils.getMergeMessage(toBranch, fromBranch);
-
-        return repo.createCommit('HEAD', signature, signature, message, treeOid, commits);
-      })
+      .then((treeOid) => Promise.all([
+        treeOid,
+        processMergeMessageCallback(MergeUtils.getMergeMessage(toBranch, fromBranch)),
+        repo.defaultSignature(),
+        repo.getHeadCommit(),
+        repo.getBranchCommit('MERGE_HEAD')
+      ]))
+      .then(([treeOid, message, signature, ...commits]) =>
+        repo.createCommit('HEAD', signature, signature, message, treeOid, commits)
+      )
       .then((commitId) => {
         repo.stateCleanup();
 
