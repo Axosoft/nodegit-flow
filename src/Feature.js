@@ -70,7 +70,7 @@ class Feature {
    * @return {Commit}   The commit created by finishing the feature
    */
   static finishFeature(repo, featureName, options = {}) {
-    const {keepBranch, isRebase} = options;
+    const {keepBranch, isRebase, processMergeMessageCallback} = options;
 
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
@@ -113,7 +113,7 @@ class Feature {
         cancelDevelopMerge = isSameCommit || isRebase;
 
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, featureBranch, repo);
+          return utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback);
         } else if (isRebase && !isSameCommit) {
           return utils.Repo.rebase(developBranch, featureBranch, repo);
         }

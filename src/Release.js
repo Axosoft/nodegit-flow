@@ -70,7 +70,7 @@ class Release {
    * @return {Commit}   The commit created by finishing the release
    */
   static finishRelease(repo, releaseVersion, options = {}) {
-    const {keepBranch, message} = options;
+    const {keepBranch, message, processMergeMessageCallback} = options;
 
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
@@ -123,7 +123,7 @@ class Release {
 
         // Merge release into develop
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, releaseBranch, repo);
+          return utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback);
         }
         return Promise.resolve();
       })
@@ -133,7 +133,7 @@ class Release {
         const tagName = versionPrefix + releaseVersion;
         // Merge the release branch into master
         if (!cancelMasterMerge) {
-          return utils.Repo.merge(masterBranch, releaseBranch, repo)
+          return utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback)
             .then((oid) => utils.Tag.create(oid, tagName, message, repo));
         }
 
