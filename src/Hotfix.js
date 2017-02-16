@@ -63,7 +63,13 @@ class Hotfix {
    * @return {Commit}   The commit created by finishing the hotfix
    */
   static finishHotfix(repo, hotfixVersion, options = {}) {
-    const {keepBranch, message, processMergeMessageCallback} = options;
+    const {
+      keepBranch,
+      message,
+      processMergeMessageCallback,
+      postDevelopMergeCallback = () => {},
+      postMasterMergeCallback = () => {}
+    } = options;
 
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
@@ -116,7 +122,8 @@ class Hotfix {
 
         // Merge hotfix into develop
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, hotfixBranch, repo, processMergeMessageCallback);
+          return utils.Repo.merge(developBranch, hotfixBranch, repo, processMergeMessageCallback)
+            .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
         }
         return Promise.resolve();
       })
@@ -127,6 +134,7 @@ class Hotfix {
         // Merge the hotfix branch into master
         if (!cancelMasterMerge) {
           return utils.Repo.merge(masterBranch, hotfixBranch, repo, processMergeMessageCallback)
+            .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
             .then((oid) => utils.Tag.create(oid, tagName, message, repo));
         }
 

@@ -70,7 +70,14 @@ class Feature {
    * @return {Commit}   The commit created by finishing the feature
    */
   static finishFeature(repo, featureName, options = {}) {
-    const {keepBranch, isRebase, processMergeMessageCallback} = options;
+    const {
+      keepBranch,
+      isRebase,
+      preRebaseCallback = () => {},
+      processMergeMessageCallback,
+      postMergeCallback = () => {},
+      beforeRebaseFinishCallback = () => {}
+    } = options;
 
     if (!repo) {
       return Promise.reject(new Error('Repo is required'));
@@ -86,10 +93,11 @@ class Feature {
     let featureCommit;
     let cancelDevelopMerge;
     let mergeCommit;
+    let developBranchName;
     let featureBranchName;
     return Config.getConfig(repo)
       .then((config) => {
-        const developBranchName = config['gitflow.branch.develop'];
+        developBranchName = config['gitflow.branch.develop'];
         featureBranchName = config['gitflow.prefix.feature'] + featureName;
 
         return Promise.all(
@@ -113,9 +121,11 @@ class Feature {
         cancelDevelopMerge = isSameCommit || isRebase;
 
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback);
+          return utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback)
+            .then(utils.InjectIntermediateCallback(postMergeCallback));
         } else if (isRebase && !isSameCommit) {
-          return utils.Repo.rebase(developBranch, featureBranch, repo);
+          return Promise.resolve(preRebaseCallback(developBranchName, featureBranchName))
+            .then(() => utils.Repo.rebase(developBranch, featureBranch, repo, beforeRebaseFinishCallback));
         }
         return Promise.resolve();
       })
