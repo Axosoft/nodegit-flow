@@ -25,6 +25,7 @@ Starts a git flow "feature"
 | featureName | <code>String</code> | The name of the feature to start |
 | options | <code>Object</code> | Options for start feature |
 
+
 <a name="Feature+finishFeature"></a>
 ### feature.finishFeature(featureName, options) ⇒ <code>Commit</code>
 Finishes a git flow "feature"
@@ -37,6 +38,17 @@ Finishes a git flow "feature"
 | --- | --- | --- |
 | featureName | <code>String</code> | The name of the feature to finish |
 | options | <code>Object</code> | Options for finish feature |
+
+**Options**:
+
+| Option | Type | Description |
+| --- | --- | --- |
+| keepBranch | Boolean | Keep the branch after merge |
+| isRebase | Boolean | Use Rebase instead of merge |
+| preRebaseCallback | Function | Callback that is fired before rebase occurs, only applicable if **isRebase** is truthy. If the callback returns a Promise, the **preRebaseCallback** promise must succeed before the rebase occurs. The **preRebaseCallback** is called with development branch name and the feature branch name. |
+| processMergeMessageCallback | Function | Callback that is fired before merge occurs, only applicable if **isRebase** is falsy. If the callback returns a Promise, the **processMergeMessageCallback** promise must succeed before the merge occurs. The result of the **processMergeMessageCallback** must be a string or a promise that resolves to a string, as that message will be used for the merge message. the **processMergeMessageCallback** will be called with the generated merge message as a parameter. |
+| postMergeCallback | Function | Callback fired after a successful merge occurs. |
+| beforeRebaseFinishCallback | Function | Callback that is fired right before a rebase is finished with metadata reflecting the rebase operation in full. See [Rebase Branches](http://www.nodegit.org/api/repository/#rebaseBranches) |
 
 <a name="Feature.startFeature"></a>
 ### Feature.startFeature(repo, featureName, options) ⇒ <code>Branch</code>
@@ -66,3 +78,13 @@ Finishes a git flow "feature"
 | featureName | <code>String</code> | The name of the feature to finish |
 | options | <code>Object</code> | Options for finish feature |
 
+**Options**:
+
+| Option | Type | Description |
+| --- | --- | --- |
+| keepBranch | Boolean | Keep the branch after merge |
+| isRebase | Boolean | Use Rebase instead of merge |
+| preRebaseCallback | Function | Callback that is fired before rebase occurs, only applicable if **isRebase** is truthy. If the callback returns a Promise, the **preRebaseCallback** promise must succeed before the rebase occurs. The **preRebaseCallback** is called with development branch name and the feature branch name. |
+| processMergeMessageCallback | Function | Callback that is fired before merge occurs, only applicable if **isRebase** is falsy. If the callback returns a Promise, the **processMergeMessageCallback** promise must succeed before the merge occurs. The result of the **processMergeMessageCallback** must be a string or a promise that resolves to a string, as that message will be used for the merge message. the **processMergeMessageCallback** will be called with the generated merge message as a parameter. |
+| postMergeCallback | Function | Callback fired after a successful merge occurs. |
+| beforeRebaseFinishCallback | Function | Callback that is fired right before a rebase is finished with metadata reflecting the rebase operation in full. See [Rebase Branches](http://www.nodegit.org/api/repository/#rebaseBranches) |
