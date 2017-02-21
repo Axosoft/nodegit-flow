@@ -43,8 +43,15 @@ const RepoUtils = {
       });
   },
 
-  rebase(toBranch, fromBranch, repo) {
-    return repo.rebaseBranches(fromBranch.name(), toBranch.name(), undefined, undefined)
+  rebase(toBranch, fromBranch, repo, beforeRebaseFinish) {
+    return repo.rebaseBranches(
+      fromBranch.name(),
+      toBranch.name(),
+      undefined,
+      undefined,
+      undefined,
+      beforeRebaseFinish
+    )
       .then((result) => {
         if (result.hasConflicts && result.hasConflicts()) {
           return Promise.reject(result);

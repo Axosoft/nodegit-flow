@@ -56,7 +56,7 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(
   if (!keepBranch) {
     return promise
       .catch((err) => {
-        expect(err.message).toBe(`Cannot locate local branch '${releaseBranch.shorthand()}'`);
+        expect(err.message.toLowerCase()).toBe(`cannot locate local branch '${releaseBranch.shorthand().toLowerCase()}'`);
       });
   }
 

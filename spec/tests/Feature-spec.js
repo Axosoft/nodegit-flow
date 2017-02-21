@@ -32,7 +32,7 @@ const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBr
 
   if (!keepBranch) {
     return promise.catch((err) => {
-      expect(err.message).toBe(`Cannot locate local branch '${featureBranch.shorthand()}'`);
+      expect(err.message.toLowerCase()).toBe(`cannot locate local branch '${featureBranch.shorthand().toLowerCase()}'`);
     });
   }
 
