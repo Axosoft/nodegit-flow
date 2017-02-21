@@ -56,7 +56,7 @@ const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(
   if (!keepBranch) {
     return promise
       .catch((err) => {
-        expect(err.message).toBe(`Cannot locate local branch '${hotfixBranch.shorthand()}'`);
+        expect(err.message.toLowerCase()).toBe(`cannot locate local branch '${hotfixBranch.shorthand().toLowerCase()}'`);
       });
   }
 
