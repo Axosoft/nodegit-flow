@@ -45,6 +45,7 @@ Finishes a git flow "release"
 | keepBranch | Boolean | Keep the branch after merge |
 | message | String | Tag will be created with this message |
 | processMergeMessageCallback | Function | Callback that is fired before merge occurs. If the callback returns a Promise, the **processMergeMessageCallback** promise must succeed before the merge occurs. The result of the **processMergeMessageCallback** must be a string or a promise that resolves to a string, as that message will be used for the merge message. the **processMergeMessageCallback** will be called with the generated merge message as a parameter. |
+| beforeMergeCallback | Function | Callback fired immediately before a merge occurs. Is parameterized by targetBranchName and releaseBranchName |
 | postDevelopMergeCallback | Function | Callback fired after a successful merge with development occurs. |
 | postMasterMergeCallback | Function | Callback fired after a successful merge with master occurs. |
 

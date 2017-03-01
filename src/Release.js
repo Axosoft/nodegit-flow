@@ -74,6 +74,7 @@ class Release {
       keepBranch,
       message,
       processMergeMessageCallback,
+      beforeMergeCallback = () => {},
       postDevelopMergeCallback = () => {},
       postMasterMergeCallback = () => {}
     } = options;
@@ -129,7 +130,8 @@ class Release {
 
         // Merge release into develop
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback)
+          return Promise.resolve(beforeMergeCallback(developBranch, releaseBranch))
+            .then(() => utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
         }
         return Promise.resolve();
@@ -140,7 +142,8 @@ class Release {
         const tagName = versionPrefix + releaseVersion;
         // Merge the release branch into master
         if (!cancelMasterMerge) {
-          return utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback)
+          return Promise.resolve(beforeMergeCallback(masterBranch, releaseBranch))
+            .then(() => utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
             .then((oid) => utils.Tag.create(oid, tagName, message, repo));
         }
