@@ -74,6 +74,7 @@ class Feature {
       keepBranch,
       isRebase,
       preRebaseCallback = () => {},
+      beforeMergeCallback = () => {},
       processMergeMessageCallback,
       postMergeCallback = () => {},
       beforeRebaseFinishCallback = () => {}
@@ -121,7 +122,8 @@ class Feature {
         cancelDevelopMerge = isSameCommit || isRebase;
 
         if (!cancelDevelopMerge) {
-          return utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback)
+          return Promise.resolve(beforeMergeCallback(developBranchName, featureBranchName))
+            .then(() => utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postMergeCallback));
         } else if (isRebase && !isSameCommit) {
           return Promise.resolve(preRebaseCallback(developBranchName, featureBranchName))

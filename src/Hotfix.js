@@ -80,6 +80,9 @@ class Hotfix {
       return Promise.reject(new Error('Hotfix name is required'));
     }
 
+    let developBranchName;
+    let hotfixBranchName;
+    let masterBranchName;
     let cancelMasterMerge;
     let cancelDevelopMerge;
     let developBranch;
@@ -92,9 +95,9 @@ class Hotfix {
     let versionPrefix;
     return Config.getConfig(repo)
       .then((config) => {
-        const developBranchName = config['gitflow.branch.develop'];
-        const hotfixBranchName = config['gitflow.prefix.hotfix'] + hotfixVersion;
-        const masterBranchName = config['gitflow.branch.master'];
+        developBranchName = config['gitflow.branch.develop'];
+        hotfixBranchName = config['gitflow.prefix.hotfix'] + hotfixVersion;
+        masterBranchName = config['gitflow.branch.master'];
         versionPrefix = config['gitflow.prefix.versiontag'];
 
         // Get the develop, master, and hotfix branch
@@ -123,7 +126,7 @@ class Hotfix {
 
         // Merge hotfix into develop
         if (!cancelDevelopMerge) {
-          return Promise.resolve(beforeMergeCallback(developBranch, hotfixBranch))
+          return Promise.resolve(beforeMergeCallback(developBranchName, hotfixBranchName))
             .then(() => utils.Repo.merge(developBranch, hotfixBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
         }
@@ -135,7 +138,7 @@ class Hotfix {
         const tagName = versionPrefix + hotfixVersion;
         // Merge the hotfix branch into master
         if (!cancelMasterMerge) {
-          return Promise.resolve(beforeMergeCallback(masterBranch, hotfixBranch))
+          return Promise.resolve(beforeMergeCallback(masterBranchName, hotfixBranchName))
             .then(() => utils.Repo.merge(masterBranch, hotfixBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
             .then((oid) => utils.Tag.create(oid, tagName, message, repo));
