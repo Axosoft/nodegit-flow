@@ -87,6 +87,9 @@ class Release {
       return Promise.reject(new Error('Release name is required'));
     }
 
+    let developBranchName;
+    let releaseBranchName;
+    let masterBranchName;
     let developBranch;
     let releaseBranch;
     let masterBranch;
@@ -99,9 +102,9 @@ class Release {
     let versionPrefix;
     return Config.getConfig(repo)
       .then((config) => {
-        const developBranchName = config['gitflow.branch.develop'];
-        const releaseBranchName = config['gitflow.prefix.release'] + releaseVersion;
-        const masterBranchName = config['gitflow.branch.master'];
+        developBranchName = config['gitflow.branch.develop'];
+        releaseBranchName = config['gitflow.prefix.release'] + releaseVersion;
+        masterBranchName = config['gitflow.branch.master'];
         versionPrefix = config['gitflow.prefix.versiontag'];
 
         // Get the develop, master, and release branch
@@ -130,7 +133,7 @@ class Release {
 
         // Merge release into develop
         if (!cancelDevelopMerge) {
-          return Promise.resolve(beforeMergeCallback(developBranch, releaseBranch))
+          return Promise.resolve(beforeMergeCallback(developBranchName, releaseBranchName))
             .then(() => utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
         }
@@ -142,7 +145,7 @@ class Release {
         const tagName = versionPrefix + releaseVersion;
         // Merge the release branch into master
         if (!cancelMasterMerge) {
-          return Promise.resolve(beforeMergeCallback(masterBranch, releaseBranch))
+          return Promise.resolve(beforeMergeCallback(masterBranchName, releaseBranchName))
             .then(() => utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback))
             .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
             .then((oid) => utils.Tag.create(oid, tagName, message, repo));
