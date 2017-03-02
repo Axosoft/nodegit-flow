@@ -133,7 +133,7 @@ class Feature {
       })
       .then((_mergeCommit) => {
         mergeCommit = _mergeCommit;
-        if (cancelDevelopMerge) {
+        if (cancelDevelopMerge && !keepBranch) {
           return repo.checkoutBranch(developBranch);
         }
         return Promise.resolve();
