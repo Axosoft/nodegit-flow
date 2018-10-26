@@ -51,7 +51,7 @@ describe('Base', function() {
     });
 
     it('should return new flow object if repository is passed', function(done) {
-      spyOn(NodeGit.Branch, 'lookup').and.returnValue(Promise.resolve());
+      spyOn(NodeGit.Branch, 'lookup').and.returnValue(Promise.resolve({ id: () => '' }));
       const defaultConfig = Config.getConfigDefault();
       return Base.init(this.repo, defaultConfig)
         .then((flow) => {
@@ -67,7 +67,7 @@ describe('Base', function() {
     });
 
     it('develop branch should exist after initialization', function(done) {
-      spyOn(NodeGit.Branch, 'lookup').and.returnValue(Promise.resolve());
+      spyOn(NodeGit.Branch, 'lookup').and.returnValue(Promise.resolve({ id: () => '' }));
       const defaultConfig = Config.getConfigDefault();
       return Base.init(this.repo, defaultConfig)
         .then(() => Base.developBranchExists(this.repo))
