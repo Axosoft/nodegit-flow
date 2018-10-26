@@ -1,5 +1,5 @@
 const BranchConstants = require('./BranchConstants');
-const ErrorMessageConstants = require('ErrorMessageConstants');
+const ErrorMessageConstants = require('./ErrorMessageConstants');
 
 module.exports = {
   Branch: BranchConstants,

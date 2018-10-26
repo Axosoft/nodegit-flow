@@ -16,9 +16,22 @@ module.exports = (NodeGit) => {
 
   const GitFlowClasses = [Base, Config, Feature, Hotfix, Release];
   // Add static Flow methods to provided nodegit instance
-  NodeGit.flow = {};
+  NodeGit.Flow = {};
   GitFlowClasses.forEach((GitFlowClass) => {
     utils.Assign(NodeGit.Flow, GitFlowClass);
   });
-  return NodeGit;
+
+  if (process.env.NODEGIT_FLOW_TESTING_ENABLED) {
+    NodeGit.Flow.__TEST__ = {
+      Base,
+      Config,
+      Feature,
+      Hotfix,
+      Release,
+      utils
+    };
+  }
+
+  module.exports = NodeGit;
+  return module.exports;
 };

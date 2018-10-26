@@ -1,10 +1,9 @@
 /* eslint prefer-arrow-callback: 0 */
 
-const Hotfix = require('../../src/Hotfix');
-const NodeGit = require('../../src');
+const NodeGit = require('../utils/NodeGit');
 const RepoUtils = require('../utils/RepoUtils');
 
-const utils = require('../../src/utils');
+const { utils } = NodeGit.Flow.__TEST__;
 
 const expectStartHotfixSuccess = function expectStartHotfixSuccess(hotfixBranch, expectedBranchName) {
   expect(hotfixBranch.isBranch()).toBeTruthy();
@@ -96,7 +95,7 @@ describe('Hotfix', function() {
 
   it('should be able to start hotfix statically', function(done) {
     const hotfixName = '1.0.0';
-    Hotfix.startHotfix(this.repo, hotfixName)
+    NodeGit.Flow.startHotfix(this.repo, hotfixName)
       .then((hotfixBranch) => {
         expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
         done();
@@ -116,7 +115,7 @@ describe('Hotfix', function() {
     const hotfixName = '1.0.0';
     const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
     let hotfixBranch;
-    Hotfix.startHotfix(this.repo, hotfixName)
+    NodeGit.Flow.startHotfix(this.repo, hotfixName)
       .then((_hotfixBranch) => {
         hotfixBranch = _hotfixBranch;
         expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
@@ -128,7 +127,7 @@ describe('Hotfix', function() {
           this.firstCommit
         );
       })
-      .then(() => Hotfix.finishHotfix(this.repo, hotfixName))
+      .then(() => NodeGit.Flow.finishHotfix(this.repo, hotfixName))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName))
       .then(done);
   });
@@ -159,7 +158,7 @@ describe('Hotfix', function() {
     const hotfixName = '1.0.0';
     const fullTagName = `refs/tags/${this.versionPrefix}${hotfixName}`;
     let hotfixBranch;
-    Hotfix.startHotfix(this.repo, hotfixName)
+    NodeGit.Flow.startHotfix(this.repo, hotfixName)
       .then((_hotfixBranch) => {
         hotfixBranch = _hotfixBranch;
         expectStartHotfixSuccess(hotfixBranch, this.hotfixPrefix + hotfixName);
@@ -171,7 +170,7 @@ describe('Hotfix', function() {
           this.firstCommit
         );
       })
-      .then(() => Hotfix.finishHotfix(this.repo, hotfixName, {keepBranch: true}))
+      .then(() => NodeGit.Flow.finishHotfix(this.repo, hotfixName, {keepBranch: true}))
       .then(() => expectFinishHotfixSuccess.call(this, hotfixBranch, fullTagName, true))
       .then(done);
   });

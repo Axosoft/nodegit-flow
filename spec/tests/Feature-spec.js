@@ -1,9 +1,7 @@
 /* eslint prefer-arrow-callback: 0 */
 
-const Feature = require('../../src/Feature');
-const NodeGit = require('../../src');
+const NodeGit = require('../utils/NodeGit');
 const RepoUtils = require('../utils/RepoUtils');
-
 const MergeUtils = require('../../src/utils/MergeUtils');
 
 const expectStartFeatureSuccess = function expectStartFeatureSuccess(featureBranch, expectedBranchName) {
@@ -71,7 +69,7 @@ describe('Feature', function() {
 
   it('should be able to start feature statically', function(done) {
     const featureName = 'foobar';
-    Feature.startFeature(this.repo, featureName)
+    NodeGit.Flow.startFeature(this.repo, featureName)
       .then((featureBranch) => {
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
         done();
@@ -90,7 +88,7 @@ describe('Feature', function() {
   it('should be able to finish feature statically', function(done) {
     const featureName = 'foobar';
     let featureBranch;
-    Feature.startFeature(this.repo, featureName)
+    NodeGit.Flow.startFeature(this.repo, featureName)
       .then((_featureBranch) => {
         featureBranch = _featureBranch;
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
@@ -103,7 +101,7 @@ describe('Feature', function() {
           this.firstCommit
         );
       })
-      .then(() => Feature.finishFeature(this.repo, featureName))
+      .then(() => NodeGit.Flow.finishFeature(this.repo, featureName))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch))
       .then(done);
   });
@@ -132,7 +130,7 @@ describe('Feature', function() {
   it('should be able to finish feature statically and keep the branch', function(done) {
     const featureName = 'foobar';
     let featureBranch;
-    Feature.startFeature(this.repo, featureName)
+    NodeGit.Flow.startFeature(this.repo, featureName)
       .then((_featureBranch) => {
         featureBranch = _featureBranch;
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
@@ -145,7 +143,7 @@ describe('Feature', function() {
           this.firstCommit
         );
       })
-      .then(() => Feature.finishFeature(this.repo, featureName, {keepBranch: true}))
+      .then(() => NodeGit.Flow.finishFeature(this.repo, featureName, {keepBranch: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, true))
       .then(done);
   });
@@ -174,7 +172,7 @@ describe('Feature', function() {
   it('should be able to finish feature statically with a rebase', function(done) {
     const featureName = 'foobar';
     let featureBranch;
-    Feature.startFeature(this.repo, featureName)
+    NodeGit.Flow.startFeature(this.repo, featureName)
       .then((_featureBranch) => {
         featureBranch = _featureBranch;
         expectStartFeatureSuccess(featureBranch, this.featurePrefix + featureName);
@@ -196,7 +194,7 @@ describe('Feature', function() {
         this.firstCommit,
         'refs/heads/develop'
       ))
-      .then(() => Feature.finishFeature(this.repo, featureName, {keepBranch: false, isRebase: true}))
+      .then(() => NodeGit.Flow.finishFeature(this.repo, featureName, {keepBranch: false, isRebase: true}))
       .then(() => expectFinishFeatureSuccess.call(this, featureBranch, false, 'second commit'))
       .then(done);
   });
