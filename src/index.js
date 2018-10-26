@@ -7,6 +7,10 @@ const makeHotfix = require('./Hotfix');
 const makeRelease = require('./Release');
 
 module.exports = (NodeGit) => {
+  if (NodeGit.Flow) {
+    return NodeGit;
+  }
+
   const utils = makeUtils(NodeGit);
   const Config = makeConfig(NodeGit, { constants });
   const Feature = makeFeature(NodeGit, { constants, utils }, { Config });
@@ -32,6 +36,5 @@ module.exports = (NodeGit) => {
     };
   }
 
-  module.exports = NodeGit;
-  return module.exports;
+  return NodeGit;
 };
