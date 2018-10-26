@@ -1,8 +1,4 @@
-const NodeGit = require('nodegit');
-
-const MergeUtils = require('./MergeUtils');
-
-const RepoUtils = {
+module.exports = (NodeGit, MergeUtils) => ({
   merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a) {
     return Promise.resolve()
       .then(() => {
@@ -60,6 +56,4 @@ const RepoUtils = {
         return toBranch.setTarget(result, '');
       });
   }
-};
-
-module.exports = RepoUtils;
+});

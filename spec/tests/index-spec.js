@@ -1,6 +1,6 @@
 /* eslint prefer-arrow-callback: 0 */
 
-const {Flow} = require('../../src');
+const { Flow } = require('../utils/NodeGit');
 
 describe('Flow', function() {
   it('should contain all of the static methods', function() {

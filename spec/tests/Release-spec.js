@@ -1,10 +1,9 @@
 /* eslint prefer-arrow-callback: 0 */
 
-const Release = require('../../src/Release');
-const NodeGit = require('../../src');
+const NodeGit = require('../utils/NodeGit');
 const RepoUtils = require('../utils/RepoUtils');
 
-const utils = require('../../src/utils');
+const { utils } = NodeGit.Flow.__TEST__;
 
 const expectStartReleaseSuccess = function expectStartReleaseSuccess(releaseBranch, expectedBranchName) {
   expect(releaseBranch.isBranch()).toBeTruthy();
@@ -30,28 +29,28 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(
       NodeGit.Branch.BRANCH.LOCAL
     )
   ))
-  .then((branches) => {
-    developBranch = branches[0];
-    masterBranch = branches[1];
-    expect(developBranch.isHead());
-    return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
-  })
-  .then((commits) => {
-    developCommit = commits[0];
-    masterCommit = commits[1];
-    const expectedDevelopCommitMessage =
-      developCommitMessage || utils.Merge.getMergeMessage(developBranch, releaseBranch);
-    const expectedMasterCommitMessage =
-      masterCommitMessage || utils.Merge.getMergeMessage(masterBranch, releaseBranch);
-    expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
-    expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
-    return NodeGit.Reference.lookup(this.repo, expectedTagName);
-  })
-  .then((tag) => {
-    expect(tag.isTag()).toBeTruthy();
-    expect(tag.target()).toEqual(masterCommit.id());
-    return NodeGit.Branch.lookup(this.repo, releaseBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
-  });
+    .then((branches) => {
+      developBranch = branches[0];
+      masterBranch = branches[1];
+      expect(developBranch.isHead());
+      return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
+    })
+    .then((commits) => {
+      developCommit = commits[0];
+      masterCommit = commits[1];
+      const expectedDevelopCommitMessage =
+        developCommitMessage || utils.Merge.getMergeMessage(developBranch, releaseBranch);
+      const expectedMasterCommitMessage =
+        masterCommitMessage || utils.Merge.getMergeMessage(masterBranch, releaseBranch);
+      expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
+      expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
+      return NodeGit.Reference.lookup(this.repo, expectedTagName);
+    })
+    .then((tag) => {
+      expect(tag.isTag()).toBeTruthy();
+      expect(tag.target()).toEqual(masterCommit.id());
+      return NodeGit.Branch.lookup(this.repo, releaseBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
+    });
 
   if (!keepBranch) {
     return promise
@@ -96,7 +95,7 @@ describe('Release', function() {
 
   it('should be able to start release statically', function(done) {
     const releaseName = '1.0.0';
-    Release.startRelease(this.repo, releaseName)
+    NodeGit.Flow.startRelease(this.repo, releaseName)
       .then((releaseBranch) => {
         expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
         done();
@@ -116,7 +115,7 @@ describe('Release', function() {
     const releaseName = '1.0.0';
     const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
     let releaseBranch;
-    Release.startRelease(this.repo, releaseName)
+    NodeGit.Flow.startRelease(this.repo, releaseName)
       .then((_releaseBranch) => {
         releaseBranch = _releaseBranch;
         expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
@@ -129,7 +128,7 @@ describe('Release', function() {
           this.firstCommit
         );
       })
-      .then(() => Release.finishRelease(this.repo, releaseName))
+      .then(() => NodeGit.Flow.finishRelease(this.repo, releaseName))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName))
       .then(done);
   });
@@ -160,7 +159,7 @@ describe('Release', function() {
     const releaseName = '1.0.0';
     const fullTagName = `refs/tags/${this.versionPrefix}${releaseName}`;
     let releaseBranch;
-    Release.startRelease(this.repo, releaseName)
+    NodeGit.Flow.startRelease(this.repo, releaseName)
       .then((_releaseBranch) => {
         releaseBranch = _releaseBranch;
         expectStartReleaseSuccess(releaseBranch, this.releasePrefix + releaseName);
@@ -173,7 +172,7 @@ describe('Release', function() {
           this.firstCommit
         );
       })
-      .then(() => Release.finishRelease(this.repo, releaseName, {keepBranch: true}))
+      .then(() => NodeGit.Flow.finishRelease(this.repo, releaseName, {keepBranch: true}))
       .then(() => expectFinishReleaseSuccess.call(this, releaseBranch, fullTagName, true))
       .then(done);
   });

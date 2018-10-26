@@ -1,7 +1,10 @@
-const NodeGit = require('../../src');
 const fse = require('fs-extra');
-fse.writeFile = require('../../src/utils/Promisify')(fse.writeFile);
 const path = require('path');
+
+const promisify = require('../../src/utils/Promisify');
+const NodeGit = require('./NodeGit');
+
+fse.writeFile = promisify(fse.writeFile);
 
 const RepoUtils = {
   repoDir: '../repos',
