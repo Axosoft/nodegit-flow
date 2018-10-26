@@ -1,1 +1,7 @@
-require('../utils/FolderLoader')(__dirname, module.exports, 'Constants.js');
+const BranchConstants = require('./BranchConstants');
+const ErrorMessageConstants = require('ErrorMessageConstants');
+
+module.exports = {
+  Branch: BranchConstants,
+  ErrorMessage: ErrorMessageConstants
+};
