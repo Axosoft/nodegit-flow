@@ -30,28 +30,28 @@ const expectFinishHotfixSuccess = function expectFinishHotfixSuccess(
       NodeGit.Branch.BRANCH.LOCAL
     )
   ))
-  .then((branches) => {
-    developBranch = branches[0];
-    masterBranch = branches[1];
-    expect(developBranch.isHead());
-    return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
-  })
-  .then((commits) => {
-    developCommit = commits[0];
-    masterCommit = commits[1];
-    const expectedDevelopCommitMessage
-      = developMergeMessage || utils.Merge.getMergeMessage(developBranch, hotfixBranch);
-    const expectedMasterCommitMessage
-      = masterMergeMessage || utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
-    expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
-    expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
-    return NodeGit.Reference.lookup(this.repo, expectedTagName);
-  })
-  .then((tag) => {
-    expect(tag.isTag()).toBeTruthy();
-    expect(tag.target()).toEqual(masterCommit.id());
-    return NodeGit.Branch.lookup(this.repo, hotfixBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
-  });
+    .then((branches) => {
+      developBranch = branches[0];
+      masterBranch = branches[1];
+      expect(developBranch.isHead());
+      return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
+    })
+    .then((commits) => {
+      developCommit = commits[0];
+      masterCommit = commits[1];
+      const expectedDevelopCommitMessage
+        = developMergeMessage || utils.Merge.getMergeMessage(developBranch, hotfixBranch);
+      const expectedMasterCommitMessage
+        = masterMergeMessage || utils.Merge.getMergeMessage(masterBranch, hotfixBranch);
+      expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
+      expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
+      return NodeGit.Reference.lookup(this.repo, expectedTagName);
+    })
+    .then((tag) => {
+      expect(tag.isTag()).toBeTruthy();
+      expect(tag.target()).toEqual(masterCommit.id());
+      return NodeGit.Branch.lookup(this.repo, hotfixBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
+    });
 
   if (!keepBranch) {
     return promise

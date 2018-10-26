@@ -13,8 +13,8 @@ module.exports = (NodeGit, { constants }) => {
     }
 
     return repo.config()
-    .then((config) => config.getString(configKey))
-    .catch(() => Promise.reject(new Error(`Failed to read config value ${configKey}`)));
+      .then((config) => config.getString(configKey))
+      .catch(() => Promise.reject(new Error(`Failed to read config value ${configKey}`)));
   }
 
   /**
@@ -89,21 +89,21 @@ module.exports = (NodeGit, { constants }) => {
       const configKeys = _getConfigKeys();
 
       return repo.config()
-      .then((config) => {
-        const promises = configKeys.map((key) => {
-          return config.getString(key);
-        });
+        .then((config) => {
+          const promises = configKeys.map((key) => {
+            return config.getString(key);
+          });
 
-        return Promise.all(promises);
-      })
-      .then((values) => {
-        const result = {};
-        configKeys.forEach((key, i) => {
-          result[key] = values[i];
-        });
+          return Promise.all(promises);
+        })
+        .then((values) => {
+          const result = {};
+          configKeys.forEach((key, i) => {
+            result[key] = values[i];
+          });
 
-        return result;
-      });
+          return result;
+        });
     }
 
     /**

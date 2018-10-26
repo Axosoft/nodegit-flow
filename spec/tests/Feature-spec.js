@@ -19,16 +19,16 @@ const expectFinishFeatureSuccess = function expectFinishFeatureSuccess(featureBr
     this.config['gitflow.branch.develop'],
     NodeGit.Branch.BRANCH.LOCAL
   )
-  .then((_developBranch) => {
-    developBranch = _developBranch;
-    expect(developBranch.isHead());
-    return this.repo.getCommit(developBranch.target());
-  })
-  .then((developCommit) => {
-    const expectedCommitMessage = message || MergeUtils.getMergeMessage(developBranch, featureBranch);
-    expect(developCommit.message()).toBe(expectedCommitMessage);
-    return NodeGit.Branch.lookup(this.repo, featureBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
-  });
+    .then((_developBranch) => {
+      developBranch = _developBranch;
+      expect(developBranch.isHead());
+      return this.repo.getCommit(developBranch.target());
+    })
+    .then((developCommit) => {
+      const expectedCommitMessage = message || MergeUtils.getMergeMessage(developBranch, featureBranch);
+      expect(developCommit.message()).toBe(expectedCommitMessage);
+      return NodeGit.Branch.lookup(this.repo, featureBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
+    });
 
   if (!keepBranch) {
     return promise.catch((err) => {

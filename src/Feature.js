@@ -46,7 +46,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
             developBranchName,
             NodeGit.Branch.BRANCH.LOCAL
           )
-          .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()));
+            .then((developBranch) => NodeGit.Commit.lookup(repo, developBranch.target()));
         })
         .then((fromCommit) => repo.createBranch(featureBranchName, fromCommit))
         .then((_featureBranch) => {

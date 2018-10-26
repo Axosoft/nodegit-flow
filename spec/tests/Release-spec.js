@@ -30,28 +30,28 @@ const expectFinishReleaseSuccess = function expectFinishReleaseSuccess(
       NodeGit.Branch.BRANCH.LOCAL
     )
   ))
-  .then((branches) => {
-    developBranch = branches[0];
-    masterBranch = branches[1];
-    expect(developBranch.isHead());
-    return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
-  })
-  .then((commits) => {
-    developCommit = commits[0];
-    masterCommit = commits[1];
-    const expectedDevelopCommitMessage =
-      developCommitMessage || utils.Merge.getMergeMessage(developBranch, releaseBranch);
-    const expectedMasterCommitMessage =
-      masterCommitMessage || utils.Merge.getMergeMessage(masterBranch, releaseBranch);
-    expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
-    expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
-    return NodeGit.Reference.lookup(this.repo, expectedTagName);
-  })
-  .then((tag) => {
-    expect(tag.isTag()).toBeTruthy();
-    expect(tag.target()).toEqual(masterCommit.id());
-    return NodeGit.Branch.lookup(this.repo, releaseBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
-  });
+    .then((branches) => {
+      developBranch = branches[0];
+      masterBranch = branches[1];
+      expect(developBranch.isHead());
+      return Promise.all(branches.map((branch) => this.repo.getCommit(branch.target())));
+    })
+    .then((commits) => {
+      developCommit = commits[0];
+      masterCommit = commits[1];
+      const expectedDevelopCommitMessage =
+        developCommitMessage || utils.Merge.getMergeMessage(developBranch, releaseBranch);
+      const expectedMasterCommitMessage =
+        masterCommitMessage || utils.Merge.getMergeMessage(masterBranch, releaseBranch);
+      expect(developCommit.message()).toBe(expectedDevelopCommitMessage);
+      expect(masterCommit.message()).toBe(expectedMasterCommitMessage);
+      return NodeGit.Reference.lookup(this.repo, expectedTagName);
+    })
+    .then((tag) => {
+      expect(tag.isTag()).toBeTruthy();
+      expect(tag.target()).toEqual(masterCommit.id());
+      return NodeGit.Branch.lookup(this.repo, releaseBranch.shorthand(), NodeGit.Branch.BRANCH.LOCAL);
+    });
 
   if (!keepBranch) {
     return promise
