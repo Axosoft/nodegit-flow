@@ -87,9 +87,11 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
         .then(() => {
           // Create the `develop` branch if it does not already exist
           return NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL)
-            .catch(() => repo.getBranchCommit(`refs/remotes/origin/${developBranchName}`))
-            .catch(() => repo.getBranchCommit(masterBranchName))
-            .then((commit) => repo.createBranch(developBranchName, commit.id()));
+            .catch(() =>
+              repo.getBranchCommit(`refs/remotes/origin/${developBranchName}`)
+                .catch(() => repo.getBranchCommit(masterBranchName))
+                .then((commit) => repo.createBranch(developBranchName, commit.id()))
+            );
         })
         .then(() => repo.config())
         .then((config) => {
