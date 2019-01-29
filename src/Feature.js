@@ -72,7 +72,8 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         beforeMergeCallback = () => {},
         processMergeMessageCallback,
         postMergeCallback = () => {},
-        beforeRebaseFinishCallback = () => {}
+        beforeRebaseFinishCallback = () => {},
+        signingCallback
       } = options;
 
       if (!repo) {
@@ -118,7 +119,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
 
           if (!cancelDevelopMerge) {
             return Promise.resolve(beforeMergeCallback(developBranchName, featureBranchName))
-              .then(() => utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback))
+              .then(() => utils.Repo.merge(developBranch, featureBranch, repo, processMergeMessageCallback, signingCallback))
               .then(utils.InjectIntermediateCallback(postMergeCallback));
           } else if (isRebase && !isSameCommit) {
             return Promise.resolve(preRebaseCallback(developBranchName, featureBranchName))
