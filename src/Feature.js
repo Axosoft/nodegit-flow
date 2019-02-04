@@ -123,7 +123,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
               .then(utils.InjectIntermediateCallback(postMergeCallback));
           } else if (isRebase && !isSameCommit) {
             return Promise.resolve(preRebaseCallback(developBranchName, featureBranchName))
-              .then(() => utils.Repo.rebase(developBranch, featureBranch, repo, beforeRebaseFinishCallback));
+              .then(() => utils.Repo.rebase(developBranch, featureBranch, repo, beforeRebaseFinishCallback, signingCallback));
           }
           return Promise.resolve();
         })

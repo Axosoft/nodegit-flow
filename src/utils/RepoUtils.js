@@ -40,14 +40,17 @@ module.exports = (NodeGit, MergeUtils) => ({
       });
   },
 
-  rebase(toBranch, fromBranch, repo, beforeRebaseFinish) {
+  rebase(toBranch, fromBranch, repo, beforeRebaseFinish, signingCallback) {
     return repo.rebaseBranches(
       fromBranch.name(),
       toBranch.name(),
       undefined,
       undefined,
       undefined,
-      beforeRebaseFinish
+      beforeRebaseFinish,
+      {
+        signingCb: signingCallback
+      }
     )
       .then((result) => {
         if (result.hasConflicts && result.hasConflicts()) {
