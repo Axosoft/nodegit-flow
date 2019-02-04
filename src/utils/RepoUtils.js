@@ -1,5 +1,5 @@
 module.exports = (NodeGit, MergeUtils) => ({
-  merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a, signingCallback, signatureField = 'gpgsig') {
+  merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a, signingCallback) {
     return Promise.resolve()
       .then(() => {
         if (!toBranch.isHead()) {
@@ -30,7 +30,7 @@ module.exports = (NodeGit, MergeUtils) => ({
         repo.getBranchCommit('MERGE_HEAD')
       ]))
       .then(([treeOid, message, signature, ...commits]) => signingCallback
-        ? repo.createCommitWithSignature('HEAD', signature, signature, message, treeOid, commits, signatureField, signingCallback)
+        ? repo.createCommitWithSignature('HEAD', signature, signature, message, treeOid, commits, signingCallback)
         : repo.createCommit('HEAD', signature, signature, message, treeOid, commits)
       )
       .then((commitId) => {
