@@ -71,7 +71,8 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         processMergeMessageCallback,
         beforeMergeCallback = () => {},
         postDevelopMergeCallback = () => {},
-        postMasterMergeCallback = () => {}
+        postMasterMergeCallback = () => {},
+        signingCallback
       } = options;
 
       if (!repo) {
@@ -129,7 +130,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
           // Merge release into develop
           if (!cancelDevelopMerge) {
             return Promise.resolve(beforeMergeCallback(developBranchName, releaseBranchName))
-              .then(() => utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback))
+              .then(() => utils.Repo.merge(developBranch, releaseBranch, repo, processMergeMessageCallback, signingCallback))
               .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
           }
           return Promise.resolve();
@@ -141,7 +142,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
           // Merge the release branch into master
           if (!cancelMasterMerge) {
             return Promise.resolve(beforeMergeCallback(masterBranchName, releaseBranchName))
-              .then(() => utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback))
+              .then(() => utils.Repo.merge(masterBranch, releaseBranch, repo, processMergeMessageCallback, signingCallback))
               .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
               .then((oid) => utils.Tag.create(oid, tagName, message, repo));
           }

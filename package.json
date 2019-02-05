@@ -36,9 +36,9 @@
     "fs-extra": "^0.26.2",
     "jasmine-node": "mhevery/jasmine-node#Jasmine2.0",
     "jsdoc-to-markdown": "^4.0.1",
-    "nodegit": "^0.23.0"
+    "nodegit": "^0.25.0-alpha.3"
   },
   "peerDependencies": {
-    "nodegit": ">=0.13.0"
+    "nodegit": ">=0.25.0-alpha.3"
   }
 }

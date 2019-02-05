@@ -64,7 +64,8 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         processMergeMessageCallback,
         beforeMergeCallback = () => {},
         postDevelopMergeCallback = () => {},
-        postMasterMergeCallback = () => {}
+        postMasterMergeCallback = () => {},
+        signingCallback
       } = options;
 
       if (!repo) {
@@ -122,7 +123,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
           // Merge hotfix into develop
           if (!cancelDevelopMerge) {
             return Promise.resolve(beforeMergeCallback(developBranchName, hotfixBranchName))
-              .then(() => utils.Repo.merge(developBranch, hotfixBranch, repo, processMergeMessageCallback))
+              .then(() => utils.Repo.merge(developBranch, hotfixBranch, repo, processMergeMessageCallback, signingCallback))
               .then(utils.InjectIntermediateCallback(postDevelopMergeCallback));
           }
           return Promise.resolve();
@@ -134,7 +135,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
           // Merge the hotfix branch into master
           if (!cancelMasterMerge) {
             return Promise.resolve(beforeMergeCallback(masterBranchName, hotfixBranchName))
-              .then(() => utils.Repo.merge(masterBranch, hotfixBranch, repo, processMergeMessageCallback))
+              .then(() => utils.Repo.merge(masterBranch, hotfixBranch, repo, processMergeMessageCallback, signingCallback))
               .then(utils.InjectIntermediateCallback(postMasterMergeCallback))
               .then((oid) => utils.Tag.create(oid, tagName, message, repo));
           }
