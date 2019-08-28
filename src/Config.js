@@ -13,7 +13,8 @@ module.exports = (NodeGit, { constants }) => {
     }
 
     return repo.config()
-      .then((config) => config.getString(configKey))
+      .then((config) => config.snapshot())
+      .then((snapshot) => snapshot.getString(configKey))
       .catch(() => Promise.reject(new Error(`Failed to read config value ${configKey}`)));
   }
 
@@ -89,9 +90,10 @@ module.exports = (NodeGit, { constants }) => {
       const configKeys = _getConfigKeys();
 
       return repo.config()
-        .then((config) => {
+        .then((config) => config.snapshot())
+        .then((snapshot) => {
           const promises = configKeys.map((key) => {
-            return config.getString(key);
+            return snapshot.getString(key);
           });
 
           return Promise.all(promises);
