@@ -7,12 +7,26 @@ const { Base } = NodeGit.Flow.__TEST__;
 describe('Base', function() {
   beforeEach(function() {
     const repoConfig = {
-      getString(key) {
-        const defaultConfig = NodeGit.Flow.getConfigDefault();
-        return defaultConfig[key] || true;
+      lock() {
+        return Promise.resolve({
+          commit() {
+            return Promise.resolve();
+          }
+        });
+      },
+      getString() {
+        throw new Error('Do not call config.getString without taking a snapshot first.');
       },
       setString() {
         return Promise.resolve();
+      },
+      snapshot() {
+        return Promise.resolve({
+          getString(key) {
+            const defaultConfig = NodeGit.Flow.getConfigDefault();
+            return defaultConfig[key] || true;
+          }
+        });
       }
     };
     this.repo = {

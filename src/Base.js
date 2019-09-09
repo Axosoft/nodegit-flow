@@ -42,7 +42,8 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
           }
 
           return repo.config()
-            .then((config) => config.getString('gitflow.branch.develop'))
+            .then((config) => config.snapshot())
+            .then((snapshot) => snapshot.getString('gitflow.branch.develop'))
             .then((developBranchName) => NodeGit.Branch.lookup(repo, developBranchName, NodeGit.Branch.BRANCH.LOCAL))
             .then(() => true)
             .catch(() => false);
@@ -96,12 +97,19 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
         .then(() => repo.config())
         .then((config) => {
           // Set the config values. We chain them so we don't have concurrent setString calls to the same config file
-          return configKeys.reduce((last, next) => {
-            return last
-              .then(() => {
-                return config.setString(next, configToUse[next]);
-              });
-          }, Promise.resolve());
+          return config.lock().then((transaction) => {
+            const setPromise = configKeys.reduce((last, next) => {
+              return last
+                .then(() => {
+                  return config.setString(next, configToUse[next]);
+                });
+            }, Promise.resolve());
+
+            // NOTE The only way to unlock is to call `commit` or to free the transaction.
+            // NodeGit doesn't expose explicitly freeing the transaction, so if setPromise rejects,
+            // we simply wait for it to self-free.
+            return setPromise.then(() => transaction.commit());
+          });
         })
         .then(() => createFlowInstance(repo));
     }
@@ -118,9 +126,10 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
       }
 
       return repo.config()
-        .then((config) => {
+        .then((config) => config.snapshot())
+        .then((snapshot) => {
           const promises = Config.getConfigRequiredKeys().map((key) => {
-            return config.getString(key);
+            return snapshot.getString(key);
           });
 
           return Promise.all(promises)
@@ -147,7 +156,8 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
           }
 
           return repo.config()
-            .then((config) => config.getString('gitflow.branch.master'))
+            .then((config) => config.snapshot())
+            .then((snapshot) => snapshot.getString('gitflow.branch.master'))
             .then((masterBranchName) => NodeGit.Branch.lookup(repo, masterBranchName, NodeGit.Branch.BRANCH.LOCAL))
             .then(() => true)
             .catch(() => false);
