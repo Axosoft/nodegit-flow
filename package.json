@@ -4,11 +4,11 @@
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
   "main": "build/src/index.js",
   "scripts": {
-    "compile": "babel --sourceMaps --presets es2015 -d ./build/spec ./spec && babel --sourceMaps --presets es2015 -d ./build/src ./src",
+    "compile": "babel -d ./build/spec ./spec && babel -d ./build/src ./src",
     "eslint": "./node_modules/.bin/eslint src spec",
-    "prepublish": "babel --presets es2015 -d ./build/src ./src",
-    "debug-test": "npm run eslint && npm run compile && node-debug --debug-brk node_modules/.bin/jasmine-node build/spec/tests",
-    "test": "npm run eslint && npm run compile && \"node_modules/.bin/jasmine-node\" build/spec/tests"
+    "prepublish": "babel -d ./build/src ./src",
+    "debug-test": "npm run eslint && npm run compile && node-debug --debug-brk node_modules/.bin/jasmine --config=jasmine.json",
+    "test": "npm run eslint && npm run compile && node_modules/.bin/jasmine --config=jasmine.json"
   },
   "repository": {
     "type": "git",
@@ -30,15 +30,17 @@
   },
   "homepage": "https://github.com/Axosoft/nodegit-flow#readme",
   "devDependencies": {
-    "babel-cli": "^6.3.15",
-    "babel-preset-es2015": "^6.3.13",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "eslint": "^5.8.0",
     "fs-extra": "^0.26.2",
-    "jasmine-node": "mhevery/jasmine-node#Jasmine2.0",
-    "jsdoc-to-markdown": "^4.0.1",
-    "nodegit": "^0.25.0-alpha.3"
+    "jasmine": "^2.99.0",
+    "jsdoc-to-markdown": "^5.0.3",
+    "nodegit": "^0.26.4"
   },
   "peerDependencies": {
     "nodegit": ">=0.25.0-alpha.3"
-  }
+  },
+  "dependencies": {}
 }
