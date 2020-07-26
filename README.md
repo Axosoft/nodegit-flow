@@ -187,7 +187,7 @@ NodeGit.Flow.startFeature(
   {sha: 'a7b7a15c94df9528339fd86b9808ec2d9c645705'}
 )
   .then((featureBranch) => {
-    console.log(featureBranch.shorthand()); // => feautre/my-feature
+    console.log(featureBranch.shorthand()); // => feature/my-feature
   });
 ```
 
