@@ -72,6 +72,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         beforeMergeCallback = () => {},
         processMergeMessageCallback,
         postMergeCallback = () => {},
+        postCheckoutHook = () => {},
         beforeRebaseFinishCallback = () => {},
         signingCallback
       } = options;
@@ -129,18 +130,11 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         })
         .then((_mergeCommit) => {
           mergeCommit = _mergeCommit;
-          if (cancelDevelopMerge) {
-            return repo.checkoutBranch(developBranch);
-          }
-          return Promise.resolve();
-        })
-        .then(() => {
           if (keepBranch) {
             return Promise.resolve();
           }
 
-          return NodeGit.Branch.lookup(repo, featureBranchName, NodeGit.Branch.BRANCH.LOCAL)
-            .then((branch) => branch.delete());
+          return utils.Repo.safelyDeleteBranch(repo, featureBranchName, featureBranch, developBranchName, postCheckoutHook);
         })
         .then(() => mergeCommit);
     }
