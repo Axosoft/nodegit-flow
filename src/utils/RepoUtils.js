@@ -1,4 +1,21 @@
 module.exports = (NodeGit, MergeUtils) => ({
+  safelyDeleteBranch(repo, branchName, branchRef, branchNameToCheckoutIfUnsafe, postCheckoutHook = () => {}) {
+    return repo.head()
+      .then((headRef) => {
+        if (branchName !== headRef.shorthand()) {
+          return;
+        }
+
+        return repo.checkoutBranch(branchNameToCheckoutIfUnsafe)
+          .then(() => repo.head())
+          .then(newHeadRef => postCheckoutHook(
+            headRef.target().toString(),
+            newHeadRef.target().toString()
+          ));
+      })
+      .then(() => branchRef.delete());
+  },
+
   merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a, signingCallback) {
     return Promise.resolve()
       .then(() => {

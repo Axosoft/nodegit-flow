@@ -65,6 +65,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         beforeMergeCallback = () => {},
         postDevelopMergeCallback = () => {},
         postMasterMergeCallback = () => {},
+        postCheckoutHook = () => {},
         signingCallback
       } = options;
 
@@ -149,7 +150,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
             return Promise.resolve();
           }
 
-          return hotfixBranch.delete();
+          return utils.Repo.safelyDeleteBranch(repo, hotfixBranchName, hotfixBranch, masterBranchName, postCheckoutHook);
         })
         .then(() => mergeCommit);
     }
