@@ -18,7 +18,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      * @return {Branch}   The nodegit branch for the feature
      */
     static startFeature(repo, featureName, options = {}) {
-      const {sha} = options;
+      const {
+        postCheckoutHook,
+        sha
+      } = options;
 
       if (!repo) {
         return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
@@ -51,7 +54,15 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((fromCommit) => repo.createBranch(featureBranchName, fromCommit))
         .then((_featureBranch) => {
           featureBranch = _featureBranch;
-          return repo.checkoutBranch(featureBranch);
+          return repo.head()
+          .then((headRef) => {
+            return repo.checkoutBranch(featureBranch)
+            .then(() => repo.head())
+            .then(newHeadRef => postCheckoutHook(
+              headRef.target().toString(),
+              newHeadRef.target().toString()
+            ));
+          })
         })
         .then(() => featureBranch);
     }
@@ -134,7 +145,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
             return Promise.resolve();
           }
 
-          return utils.Repo.safelyDeleteBranch(repo, featureBranchName, featureBranch, developBranchName, postCheckoutHook);
+          return utils.Repo.safelyDeleteBranch(repo, featureBranchName, developBranchName, postCheckoutHook);
         })
         .then(() => mergeCommit);
     }

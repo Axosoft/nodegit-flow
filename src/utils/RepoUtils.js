@@ -1,5 +1,5 @@
 module.exports = (NodeGit, MergeUtils) => ({
-  safelyDeleteBranch(repo, branchName, branchRef, branchNameToCheckoutIfUnsafe, postCheckoutHook = () => {}) {
+  safelyDeleteBranch(repo, branchName, branchNameToCheckoutIfUnsafe, postCheckoutHook = () => {}) {
     return repo.head()
       .then((headRef) => {
         if (branchName !== headRef.shorthand()) {
@@ -13,7 +13,7 @@ module.exports = (NodeGit, MergeUtils) => ({
             newHeadRef.target().toString()
           ));
       })
-      .then(() => branchRef.delete());
+      .then(() => NodeGit.Reference.remove(repo, `refs/heads/${branchName}`));
   },
 
   merge(toBranch, fromBranch, repo, processMergeMessageCallback = a => a, signingCallback) {
