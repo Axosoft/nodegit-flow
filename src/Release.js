@@ -18,7 +18,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      */
     static startRelease(repo, releaseVersion, options = {}) {
       const {
-        postCheckoutHook,
+        postCheckoutHook  = () => {},
         sha
       } = options;
 

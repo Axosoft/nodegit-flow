@@ -19,7 +19,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      */
     static startFeature(repo, featureName, options = {}) {
       const {
-        postCheckoutHook,
+        postCheckoutHook  = () => {},
         sha
       } = options;
 

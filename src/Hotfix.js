@@ -18,7 +18,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      */
     static startHotfix(repo, hotfixVersion, options = {}) {
       const {
-        postCheckoutHook
+        postCheckoutHook  = () => {}
       } = options;
       if (!repo) {
         return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
