@@ -16,7 +16,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      * @param {Object}  options       Options for start hotfix
      * @return {Branch}   The nodegit branch for the hotfix
      */
-    static startHotfix(repo, hotfixVersion) {
+    static startHotfix(repo, hotfixVersion, options = {}) {
+      const {
+        postCheckoutHook  = () => {}
+      } = options;
       if (!repo) {
         return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
       }
@@ -44,7 +47,15 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((localMasterCommit) => repo.createBranch(hotfixBranchName, localMasterCommit))
         .then((_hotfixBranch) => {
           hotfixBranch = _hotfixBranch;
-          return repo.checkoutBranch(hotfixBranch);
+          return repo.head()
+          .then((headRef) => {
+            return repo.checkoutBranch(hotfixBranch)
+            .then(() => repo.head())
+            .then(newHeadRef => postCheckoutHook(
+              headRef.target().toString(),
+              newHeadRef.target().toString()
+            ));
+          })
         })
         .then(() => hotfixBranch);
     }
@@ -150,7 +161,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
             return Promise.resolve();
           }
 
-          return utils.Repo.safelyDeleteBranch(repo, hotfixBranchName, hotfixBranch, masterBranchName, postCheckoutHook);
+          return utils.Repo.safelyDeleteBranch(repo, hotfixBranchName, masterBranchName, postCheckoutHook);
         })
         .then(() => mergeCommit);
     }

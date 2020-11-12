@@ -17,7 +17,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
      * @return {Branch}   The nodegit branch for the release
      */
     static startRelease(repo, releaseVersion, options = {}) {
-      const {sha} = options;
+      const {
+        postCheckoutHook  = () => {},
+        sha
+      } = options;
 
       if (!repo) {
         return Promise.reject(new Error(constants.ErrorMessage.REPO_REQUIRED));
@@ -51,7 +54,15 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((startingCommit) => repo.createBranch(releaseBranchName, startingCommit))
         .then((_releaseBranch) => {
           releaseBranch = _releaseBranch;
-          return repo.checkoutBranch(releaseBranch);
+          return repo.head()
+          .then((headRef) => {
+            return repo.checkoutBranch(releaseBranch)
+            .then(() => repo.head())
+            .then(newHeadRef => postCheckoutHook(
+              headRef.target().toString(),
+              newHeadRef.target().toString()
+            ));
+          })
         })
         .then(() => releaseBranch);
     }
@@ -156,7 +167,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
             return Promise.resolve();
           }
 
-          return utils.Repo.safelyDeleteBranch(repo, releaseBranchName, releaseBranch, masterBranchName, postCheckoutHook);
+          return utils.Repo.safelyDeleteBranch(repo, releaseBranchName, masterBranchName, postCheckoutHook);
         })
         .then(() => mergeCommit);
     }
