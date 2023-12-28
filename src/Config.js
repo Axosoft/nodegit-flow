@@ -34,7 +34,7 @@ module.exports = (NodeGit, { constants }) => {
     */
     static getConfigDefault() {
       return {
-        'gitflow.branch.master': 'master',
+        'gitflow.branch.master': 'main',
         'gitflow.branch.develop': 'develop',
 
         'gitflow.prefix.feature': 'feature/',
