@@ -110,7 +110,7 @@ Retrieves an object that contains the git config values that are relevant to git
 Returns the following object which is the standard git flow config object
 ```javascript
 {
-  'gitflow.branch.master': 'master',
+  'gitflow.branch.master': 'main',
   'gitflow.branch.develop': 'develop',
   'gitflow.prefix.feature': 'feature/',
   'gitflow.prefix.release': 'release/',
@@ -167,7 +167,7 @@ NodeGit.Flow.open(repository)
     return flow.getMasterBranch();
   })
   .then((masterBranchName) => {
-    console.log(masterBranchName); // => master
+    console.log(masterBranchName); // => main
   });
 ```
 
@@ -230,7 +230,7 @@ Validates that a config object has all of the required keys for nodegit-flow to 
 Example:
 ```javascript
 const result = NodeGit.Flow.validateConfig({
-  'gitflow.branch.master': 'master',
+  'gitflow.branch.master': 'main',
   'gitflow.branch.develop': 'develop',
   'gitflow.prefix.feature': 'feature/',
   'gitflow.prefix.hotfix': 'hotfix/'
