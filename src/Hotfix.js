@@ -77,7 +77,8 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         postDevelopMergeCallback = () => {},
         postMasterMergeCallback = () => {},
         postCheckoutHook = () => {},
-        signingCallback
+        signingCallback,
+        onlyMaster = false,
       } = options;
 
       if (!repo) {
@@ -129,7 +130,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
 
           // If either develop or master point to the same commit as the hotfix branch cancel
           // their respective merge
-          cancelDevelopMerge = developCommit.id().toString() === hotfixCommit.id().toString();
+          cancelDevelopMerge = onlyMaster || developCommit.id().toString() === hotfixCommit.id().toString();
           cancelMasterMerge = masterCommit.id().toString() === hotfixCommit.id().toString();
 
           // Merge hotfix into develop
