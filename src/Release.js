@@ -84,7 +84,8 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         postDevelopMergeCallback = () => {},
         postMasterMergeCallback = () => {},
         postCheckoutHook = () => {},
-        signingCallback
+        signingCallback,
+        onlyMaster = false,
       } = options;
 
       if (!repo) {
@@ -136,7 +137,7 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
 
           // If either develop or master point to the same commit as the release branch cancel
           // their respective merge
-          cancelDevelopMerge = developCommit.id().toString() === releaseCommit.id().toString();
+          cancelDevelopMerge = onlyMaster || developCommit.id().toString() === releaseCommit.id().toString();
           cancelMasterMerge = masterCommit.id().toString() === releaseCommit.id().toString();
 
           // Merge release into develop
