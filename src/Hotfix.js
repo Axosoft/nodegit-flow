@@ -11,10 +11,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "hotfix"
      * @async
-     * @param {Object}  repo          The repository to start a hotfix in
-     * @param {String}  hotfixVersion The version of the hotfix to start
-     * @param {Object}  options       Options for start hotfix
-     * @return {Branch}   The nodegit branch for the hotfix
+     * @param {object}  repo          The repository to start a hotfix in
+     * @param {string}  hotfixVersion The version of the hotfix to start
+     * @param {object}  options       Options for start hotfix
+     * @returns {Branch}   The nodegit branch for the hotfix
      */
     static startHotfix(repo, hotfixVersion, options = {}) {
       const {
@@ -48,14 +48,14 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((_hotfixBranch) => {
           hotfixBranch = _hotfixBranch;
           return repo.head()
-          .then((headRef) => {
-            return repo.checkoutBranch(hotfixBranch)
-            .then(() => repo.head())
-            .then(newHeadRef => postCheckoutHook(
-              headRef.target().toString(),
-              newHeadRef.target().toString()
-            ));
-          })
+            .then((headRef) => {
+              return repo.checkoutBranch(hotfixBranch)
+                .then(() => repo.head())
+                .then(newHeadRef => postCheckoutHook(
+                  headRef.target().toString(),
+                  newHeadRef.target().toString()
+                ));
+            });
         })
         .then(() => hotfixBranch);
     }
@@ -63,10 +63,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "hotfix"
      * @async
-     * @param {Object}  repo            The repository to finish a hotfix in
-     * @param {String}  hotfixVersion   The version of the hotfix to finish
-     * @param {Object}  options         Options for finish hotfix
-     * @return {Commit}   The commit created by finishing the hotfix
+     * @param {object}  repo            The repository to finish a hotfix in
+     * @param {string}  hotfixVersion   The version of the hotfix to finish
+     * @param {object}  options         Options for finish hotfix
+     * @returns {Commit}   The commit created by finishing the hotfix
      */
     static finishHotfix(repo, hotfixVersion, options = {}) {
       const {
@@ -170,9 +170,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "hotfix"
      * @async
-     * @param {String}  hotfixVersion The version of the hotfix to start
-     * @param {Object}  options       Options for start hotfix
-     * @return {Branch}   The nodegit branch for the hotfix
+     * @param {string}  hotfixVersion The version of the hotfix to start
+     * @param {object}  options       Options for start hotfix
+     * @returns {Branch}   The nodegit branch for the hotfix
      */
     startHotfix() {
       return Hotfix.startHotfix(this.repo, ...arguments);
@@ -181,9 +181,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "hotfix"
      * @async
-     * @param {String}  hotfixVersion   The version of the hotfix to finish
-     * @param {Object}  options         Options for finish hotfix
-     * @return {Commit}   The commit created by finishing the hotfix
+     * @param {string}  hotfixVersion   The version of the hotfix to finish
+     * @param {object}  options         Options for finish hotfix
+     * @returns {Commit}   The commit created by finishing the hotfix
      */
     finishHotfix() {
       return Hotfix.finishHotfix(this.repo, ...arguments);

@@ -11,10 +11,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "release"
      * @async
-     * @param {Object}  repo            The repository to start a release in
-     * @param {String}  releaseVersion  The version of the release to start
-     * @param {Object}  options         Options for start release
-     * @return {Branch}   The nodegit branch for the release
+     * @param {object}  repo            The repository to start a release in
+     * @param {string}  releaseVersion  The version of the release to start
+     * @param {object}  options         Options for start release
+     * @returns {Branch}   The nodegit branch for the release
      */
     static startRelease(repo, releaseVersion, options = {}) {
       const {
@@ -55,14 +55,14 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((_releaseBranch) => {
           releaseBranch = _releaseBranch;
           return repo.head()
-          .then((headRef) => {
-            return repo.checkoutBranch(releaseBranch)
-            .then(() => repo.head())
-            .then(newHeadRef => postCheckoutHook(
-              headRef.target().toString(),
-              newHeadRef.target().toString()
-            ));
-          })
+            .then((headRef) => {
+              return repo.checkoutBranch(releaseBranch)
+                .then(() => repo.head())
+                .then(newHeadRef => postCheckoutHook(
+                  headRef.target().toString(),
+                  newHeadRef.target().toString()
+                ));
+            });
         })
         .then(() => releaseBranch);
     }
@@ -70,10 +70,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "release"
      * @async
-     * @param {Object}  repo            The repository to finish a release in
-     * @param {String}  releaseVersion  The version of the release to finish
-     * @param {Object}  options         Options for finish release
-     * @return {Commit}   The commit created by finishing the release
+     * @param {object}  repo            The repository to finish a release in
+     * @param {string}  releaseVersion  The version of the release to finish
+     * @param {object}  options         Options for finish release
+     * @returns {Commit}   The commit created by finishing the release
      */
     static finishRelease(repo, releaseVersion, options = {}) {
       const {
@@ -176,9 +176,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "release"
      * @async
-     * @param {String}  releaseVersion  The version of the release to start
-     * @param {Object}  options         Options for start release
-     * @return {Branch}   The nodegit branch for the release
+     * @param {string}  releaseVersion  The version of the release to start
+     * @param {object}  options         Options for start release
+     * @returns {Branch}   The nodegit branch for the release
      */
     startRelease() {
       return Release.startRelease(this.repo, ...arguments);
@@ -187,9 +187,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "release"
      * @async
-     * @param {String}  releaseVersion  The version of the release to finish
-     * @param {Object}  options         Options for finish release
-     * @return {Commit}   The commit created by finishing the release
+     * @param {string}  releaseVersion  The version of the release to finish
+     * @param {object}  options         Options for finish release
+     * @returns {Commit}   The commit created by finishing the release
      */
     finishRelease() {
       return Release.finishRelease(this.repo, ...arguments);
