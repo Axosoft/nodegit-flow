@@ -1,6 +1,10 @@
 module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) => {
   const GitFlowClasses = [Config, Feature, Hotfix, Release];
 
+  /**
+   *
+   * @param repo
+   */
   function createFlowInstance(repo) {
     const Flow = {};
 
@@ -28,7 +32,7 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
      * Check if the repo is initialized with git flow and its develop branch exists
      * @async
      * @param {Repository}  repo  The nodegit repository instance to check
-     * @return {Boolean} Whether or not the develop branch as specified in the git config exists
+     * @returns {boolean} Whether or not the develop branch as specified in the git config exists
      */
     static developBranchExists(repo) {
       if (!repo) {
@@ -54,8 +58,8 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
      * Initializes the repo to use git flow
      * @async
      * @param {Repository}  repo            The repository to initialize git flow in
-     * @param {Object}      gitflowConfig   The git flow configuration to use
-     * @return {Flow} An instance of a flow object tied to the repository
+     * @param {object}      gitflowConfig   The git flow configuration to use
+     * @returns {Flow} An instance of a flow object tied to the repository
      */
     static init(repo, gitflowConfig) {
       if (!repo) {
@@ -118,7 +122,7 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
      * Check if the repo is using git flow
      * @async
      * @param {Repository}  repo  The nodegit repository instance to check
-     * @return {Boolean} Whether or not the repo has git flow initialized
+     * @returns {boolean} Whether or not the repo has git flow initialized
      */
     static isInitialized(repo) {
       if (!repo) {
@@ -142,7 +146,7 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
      * Check if the repo is initialized with git flow and its master branch exists
      * @async
      * @param {Repository}  repo  The nodegit repository instance to check
-     * @return {Boolean} Whether or not the master branch as specified in the git config exists
+     * @returns {boolean} Whether or not the master branch as specified in the git config exists
      */
     static masterBranchExists(repo) {
       if (!repo) {
@@ -168,7 +172,7 @@ module.exports = (NodeGit, { constants }, { Config, Feature, Hotfix, Release }) 
      * Creates a Flow instance for a repo that already has git flow initialized
      * @async
      * @param {Repository}  repo  The target nodegit repository
-     * @return {Flow} An instance of a flow object tied to the repository
+     * @returns {Flow} An instance of a flow object tied to the repository
      */
     static open(repo) {
       return Base.isInitialized(repo)

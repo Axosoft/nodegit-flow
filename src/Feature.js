@@ -12,10 +12,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "feature"
      * @async
-     * @param {Object}  repo        The repository to start a feature in
-     * @param {String}  featureName The name of the feature to start
-     * @param {Object}  options     Options for start feature
-     * @return {Branch}   The nodegit branch for the feature
+     * @param {object}  repo        The repository to start a feature in
+     * @param {string}  featureName The name of the feature to start
+     * @param {object}  options     Options for start feature
+     * @returns {Branch}   The nodegit branch for the feature
      */
     static startFeature(repo, featureName, options = {}) {
       const {
@@ -55,14 +55,14 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
         .then((_featureBranch) => {
           featureBranch = _featureBranch;
           return repo.head()
-          .then((headRef) => {
-            return repo.checkoutBranch(featureBranch)
-            .then(() => repo.head())
-            .then(newHeadRef => postCheckoutHook(
-              headRef.target().toString(),
-              newHeadRef.target().toString()
-            ));
-          })
+            .then((headRef) => {
+              return repo.checkoutBranch(featureBranch)
+                .then(() => repo.head())
+                .then(newHeadRef => postCheckoutHook(
+                  headRef.target().toString(),
+                  newHeadRef.target().toString()
+                ));
+            });
         })
         .then(() => featureBranch);
     }
@@ -70,10 +70,10 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "feature"
      * @async
-     * @param {Object}  repo        The repository to finish a feature in
-     * @param {String}  featureName The name of the feature to finish
-     * @param {Object}  options     Options for finish feature
-     * @return {Commit}   The commit created by finishing the feature
+     * @param {object}  repo        The repository to finish a feature in
+     * @param {string}  featureName The name of the feature to finish
+     * @param {object}  options     Options for finish feature
+     * @returns {Commit}   The commit created by finishing the feature
      */
     static finishFeature(repo, featureName, options = {}) {
       const {
@@ -153,9 +153,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Starts a git flow "feature"
      * @async
-     * @param {String}  featureName The name of the feature to start
-     * @param {Object}  options     Options for start feature
-     * @return {Branch}   The nodegit branch for the feature
+     * @param {string}  featureName The name of the feature to start
+     * @param {object}  options     Options for start feature
+     * @returns {Branch}   The nodegit branch for the feature
      */
     startFeature() {
       return Feature.startFeature(this.repo, ...arguments);
@@ -164,9 +164,9 @@ module.exports = (NodeGit, { constants, utils }, { Config }) => {
     /**
      * Finishes a git flow "feature"
      * @async
-     * @param {String}  featureName The name of the feature to finish
-     * @param {Object}  options     Options for finish feature
-     * @return {Commit}   The commit created by finishing the feature
+     * @param {string}  featureName The name of the feature to finish
+     * @param {object}  options     Options for finish feature
+     * @returns {Commit}   The commit created by finishing the feature
      */
     finishFeature() {
       return Feature.finishFeature(this.repo, ...arguments);
