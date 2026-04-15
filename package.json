@@ -41,9 +41,9 @@
     "globals": "^16.5.0",
     "jasmine": "^2.99.0",
     "jsdoc-to-markdown": "^9.1.3",
-    "nodegit": "^0.28.0-alpha.34"
+    "nodegit": "^0.28.0-alpha.36"
   },
   "peerDependencies": {
-    "nodegit": ">=0.28.0-alpha.34"
+    "nodegit": ">=0.28.0-alpha.36"
   }
 }
