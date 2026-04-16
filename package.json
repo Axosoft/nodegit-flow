@@ -1,12 +1,12 @@
 {
   "name": "nodegit-flow",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "nodegit-flow contains gitflow methods that aren't include in the vanilla nodegit package",
   "main": "build/src/index.js",
   "scripts": {
     "compile": "babel -d ./build/spec ./spec && babel -d ./build/src ./src",
     "eslint": "./node_modules/.bin/eslint src spec",
-    "prepublish": "babel -d ./build/src ./src",
+    "prepare": "babel -d ./build/src ./src",
     "debug-test": "npm run eslint && npm run compile && node-debug --debug-brk node_modules/.bin/jasmine --config=jasmine.json",
     "test": "npm run eslint && npm run compile && node_modules/.bin/jasmine --config=jasmine.json"
   },
